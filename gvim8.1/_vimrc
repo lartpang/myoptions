@@ -1,0 +1,344 @@
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                           common setting                               "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Startup {{{
+filetype indent plugin on
+
+function! AccentDemo()
+  let keys = ['L','a','r','t','P','a','n','g']
+  for k in keys
+    call airline#parts#define_text(k, k)
+  endfor
+  call airline#parts#define_accent('L', 'red')
+  call airline#parts#define_accent('a', 'green')
+  call airline#parts#define_accent('r', 'blue')
+  call airline#parts#define_accent('t', 'yellow')
+  call airline#parts#define_accent('P', 'orange')
+  call airline#parts#define_accent('a', 'purple')
+  call airline#parts#define_accent('n', 'bold')
+  call airline#parts#define_accent('g', 'italic')
+  let g:airline_section_a = airline#section#create(keys)
+endfunction
+
+augroup vimrcEx
+    au!
+    autocmd FileType text setlocal textwidth=78
+    autocmd VimEnter * call AccentDemo()
+augroup END
+
+" vim 文件折叠方式为 marker
+augroup ft_vim
+    au!
+    autocmd FileType vim setlocal foldmethod=marker
+
+    " 打开文件总是定位到上次编辑的位置
+    autocmd BufReadPost *
+      \ if line("'\"") > 1 && line("'\"") <= line("$") |
+      \   exe "normal! g`\"" |
+      \ endif
+augroup END
+" }}}
+
+" General {{{
+set nocompatible
+set nobackup
+set noswapfile
+set history=1024
+"自动设置当前目录为正在编辑的目录
+cd D:\Coding
+set autochdir
+autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
+
+set whichwrap=b,s,<,>,[,]
+set nobomb
+set backspace=indent,eol,start whichwrap+=<,>,[,]
+" Vim 的默认寄存器和系统剪贴板共享
+set clipboard+=unnamed
+" 设置 alt 键不映射到菜单栏
+set winaltkeys=no
+
+"关闭提示音
+set noeb
+set vb t_vb=
+" }}}
+
+" Lang & Encoding {{{
+set tenc=utf-8
+set encoding=utf-8
+set fileencodings=utf-8,chinese,latin-1
+"解决菜单乱码
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+"解决consle输出乱码
+language messages zh_CN.utf-8
+" }}}
+
+" GUI {{{
+" 设置 gvim 显示字体
+set guifont=DroidSansMono_Nerd_Font_Mono:h12
+
+set cursorline
+if &t_Co > 2 || has("gui_running")
+  " Switch on highlighting the last used search pattern.
+  set hlsearch
+endif
+" 开启实时搜索功能
+set incsearch
+" 搜索时大小写不敏感
+set ignorecase
+set number
+set relativenumber
+" 窗口大小
+set lines=30 columns=80
+" 分割出来的窗口位于当前窗口下边/右边
+set splitbelow
+set splitright
+"不显示工具/菜单栏
+set guioptions-=T
+set guioptions-=m
+set guioptions-=L
+set guioptions-=r
+set guioptions-=b
+" }}}
+
+" Format {{{
+set autoindent
+set smartindent
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+"自动折叠
+"set foldmethod=marker
+set nofoldenable
+syntax on
+" }}}
+
+" Keyboard setting {{{
+"set my leader
+let mapleader=","
+
+" 定义快捷键关闭当前分割窗口
+nmap <Leader>q :q<CR>
+" 定义快捷键保存当前窗口内容
+nmap <Leader>w :w<CR>
+
+" 定义退出模式快捷键
+inoremap jk <ESC>
+
+" 定义vim设置文件内容相关
+nnoremap <leader>ev :edit $MYVIMRC<CR>
+nnoremap <leader>sv :source $MYVIMRC<CR>
+
+" 打开当前目录 windows
+nmap <silent> <leader>ex :!start explorer %:p:h<CR>
+" 打开当前目录CMD
+nmap <silent> <leader>cmd :!start cmd /k cd %:p:h<cr>
+
+" 复制当前文件/路径到剪贴板
+nmap <leader>cf :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
+nmap <leader>cp :let @*=substitute(expand("%:p"), "/", "\\", "g")<CR>
+
+" 一键运行
+"map <F5> :w<cr>:!python %<cr>
+map <F5> :call CompileRunGcc()<CR>
+func! CompileRunGcc()
+    exec "w"
+    if &filetype == 'c'
+        exec "!g++ % -o %<"
+        exec "! %<"
+    elseif &filetype == 'cpp'
+        exec "!g++ % -o %<"
+        exec "! %<"
+    elseif &filetype == 'java'
+        exec "!javac %"
+        exec "!java %<"
+    elseif &filetype == 'python'
+        exec "!pythonvim %"
+    elseif &filetype == 'sh'
+        :!%
+    endif
+endfunc
+" }}}
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                              Plug                                     "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plug List {{{
+call plug#begin('$VIM/vimfiles/plugged')
+
+"打开界面
+Plug 'mhinz/vim-startify'
+"theme color
+Plug 'flazz/vim-colorschemes'
+" 下载好molokai存放到color文件夹中
+" theme-setting {{{
+" 配色方案
+set background=dark
+set t_Co=256
+colorscheme molokai
+" }}}
+
+" +beautiful {{{
+"美化状态栏
+Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+" airline-setting {{{
+"加强版状态栏
+" set ambiwidth=double
+let g:airline_theme='molokai'
+"使用powerline打过补丁的字体
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#whitespace#symbol = '!'
+" 打开tabline功能,方便查看Buffer和切换
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+" powerline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = '☰'
+let g:airline_symbols.maxlinenr = ''
+" }}}
+
+" 图标
+Plug 'ryanoasis/vim-devicons'
+" 配置vim-devicons{{{
+" enable folder/directory glyph flag (disabled by default with 0)
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+" enable open and close folder/directory glyph flags (disabled by default with 0)
+let g:DevIconsEnableFoldersOpenClose = 1
+let g:WebDevIconsUnicodeGlyphDoubleWidth = 0
+" }}}
+"}}}
+
+" +programming {{{
+"文件树
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+" 文件树设置 {{{
+" 关闭NERDTree快捷键
+map <leader>n :NERDTreeToggle<CR>
+""当NERDTree为剩下的唯一窗口时自动关闭
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+""修改树的显示图标
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
+let NERDTreeAutoCenter=1
+" 是否显示隐藏文件
+let NERDTreeShowHidden=0
+" 设置宽度
+let NERDTreeWinSize=25
+" 在终端启动vim时，共享NERDTree
+let g:nerdtree_tabs_open_on_console_startup=1
+" 忽略一下文件的显示
+let NERDTreeIgnore=['\.pyc','\~$','\.swp','\.class']
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ 'Ignored'   : '☒',
+    \ "Unknown"   : "?"
+    \ }
+" }}}
+
+"异步语法检查
+Plug 'w0rp/ale'
+" ale-setting {{{
+let g:ale_set_highlights = 0
+"自定义error和warning图标
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '⚡'
+"在vim自带的状态栏中整合ale
+let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
+"显示Linter名称,出错或警告等相关信息
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+"打开文件时不进行检查
+let g:ale_lint_on_enter = 0
+
+"普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
+nmap sp <Plug>(ale_previous_wrap)
+nmap sn <Plug>(ale_next_wrap)
+"<Leader>s触发/关闭语法检查
+nmap <Leader>s :ALEToggle<CR>
+"<Leader>d查看错误或警告的详细信息
+nmap <Leader>d :ALEDetail<CR>
+"使用clang对c和c++进行语法检查，对python使用flake8进行语法检查
+let g:ale_linters = {
+\   'c++': ['clang'],
+\   'c': ['clang'],
+\   'python': ['flake8'],
+\}
+" }}}
+
+"multiple selections
+Plug 'terryma/vim-multiple-cursors'
+" 多选设置 {{{
+" 关闭默认匹配
+let g:multi_cursor_use_default_mapping=0
+" 自定义匹配
+let g:multi_cursor_next_key='<leader>mn'
+let g:multi_cursor_prev_key='<leader>mp'
+let g:multi_cursor_skip_key='<leader>ms'
+let g:multi_cursor_quit_key='<Esc>'
+"}}}
+
+"Highlights trailing whitespace
+Plug 'bronson/vim-trailing-whitespace'
+" 删除尾随空格 {{{
+nmap <leader>tw :FixWhitespace<cr>
+"}}}
+
+"括号补全
+Plug 'jiangmiao/auto-pairs'
+
+"补全
+Plug 'maralla/completor.vim'
+Plug 'maralla/completor-neosnippet'
+Plug 'Shougo/neosnippet-snippets'
+" 补全设置 {{{
+"使用tab补全
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>\<cr>" : "\<cr>"
+" }}}
+
+"注释
+Plug 'scrooloose/nerdcommenter'
+" 注释说明 {{{
+"<leader>cc   加注释
+"<leader>cu   解开注释
+"<leader>c<space>  加上/解开注释, 智能判断
+"<leader>cy   先复制, 再注解(p可以进行黏贴)
+" 注释的时候自动加个空格, 强迫症必配
+let g:NERDSpaceDelims=1
+" }}}
+"}}}
+
+" +lang {{{
+
+" markdown
+Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
+
+"emmet quick-html
+Plug 'mattn/emmet-vim', {'for': 'html'}
+" }}}
+
+call plug#end()
+"}}}
