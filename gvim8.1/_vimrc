@@ -45,6 +45,9 @@ Plug 'maralla/completor.vim'
 Plug 'maralla/completor-neosnippet'
 Plug 'Shougo/neosnippet-snippets'
 
+"Tag文件窗口
+Plug 'vim-scripts/taglist.vim'
+
 "注释
 Plug 'scrooloose/nerdcommenter'
 
@@ -350,6 +353,10 @@ nmap <leader>tw :FixWhitespace<cr>
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>\<cr>" : "\<cr>"
+
+"taglist
+"""""""""""""""""""""""""""""""""""""""""""
+nmap <leader>tl :TlistToggle<cr>
 
 "注释
 """"""""""""""""""""""""""""""""""""""""""""
