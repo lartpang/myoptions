@@ -53,7 +53,16 @@ Plug 'scrooloose/nerdcommenter'
 
 "语言类
 Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
-Plug 'mattn/emmet-vim', {'for': 'html'}
+
+"全局搜索
+Plug 'dkprice/vim-easygrep'
+
+"快速打开文件
+Plug 'ctrlpvim/ctrlp.vim'
+
+"快速移动
+Plug 'easymotion/vim-easymotion'
+
 
 call plug#end()
 
@@ -124,9 +133,8 @@ set incsearch
 set ignorecase
 
 set number
-set relativenumber
 " 窗口大小
-set lines=30 columns=100
+" set lines=30 columns=100
 
 " 分割出来的窗口位于当前窗口下边/右边
 set splitbelow
@@ -255,7 +263,7 @@ let NERDTreeWinSize=25
 " 在终端启动vim时，共享NERDTree
 let g:nerdtree_tabs_open_on_console_startup=1
 " 忽略文件的显示
-let NERDTreeIgnore=['\.pyc','\~$','\.swp','\.class','\.ini']
+let NERDTreeIgnore=['\.pyc','\~$','\.swp','\.class','\.ini','\.exe']
 let g:NERDTreeIndicatorMapCustom = {
     \ "Modified"  : "✹",
     \ "Staged"    : "✚",
@@ -368,11 +376,29 @@ nmap <leader>tl :TlistToggle<cr>
 " 注释的时候自动加个空格, 强迫症必配
 let g:NERDSpaceDelims=1
 
-"html
+"全局搜索
 """"""""""""""""""""""""""""""""""""""""""""
-let g:user_emmet_expandabbr_key = '<leader>e'
-let g:use_emmet_complete_tag = 1
-let g:user_emmet_settings = {"lang":"zh-cn"}
+" <leader>vv 可以在当前目录下全局搜索指针选择的单词
+" 例如我们要全局搜索一段字符串str-star，可以在可视模式下通过光标移动选择该字符串，
+" 之后按下快捷键 <leader>vv，即完成字符串的搜索，很方便
+" 当然，我们也可以直接进行全局搜索，使用指令
+" :Grep 搜索字符串
+" 全局替换也可以
+" :Replace [target] [replacement]
+
+"快速打开文件
+""""""""""""""""""""""""""""""""""""""""""""
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+" 使用vim的忽略文件
+set wildignore+=*\\node_modules\\*,*.git*,*.svn*,*.zip*,*.exe* 
+
+"快速移动
+""""""""""""""""""""""""""""""""""""""""""""
+" <leader><leader>w                      从光标位置起，往前（往下）在单词之间移动光标
+" <leader><leader>b                       从光标位置起，往后（往上）在单词之间移动光标
+" <leader><leader>s                       从光标位置起，同时往前往后，在单词之间移动光标
+" <leader><leader>f｛char｝          从光标位置起，往前（往下）在单个字符之间移动光标
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
