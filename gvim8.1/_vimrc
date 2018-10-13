@@ -107,10 +107,9 @@ language messages zh_CN.utf-8
 "GUI
 """"""""""""""""""""""""""""""""""""""""""""
 " 设定命令行的行数为 2
-set cmdheight=2
+set cmdheight=1
 " 状态栏显示目前所执行的指令
 set showcmd
-
 set guifont=Monaco\ 12
 set lines=35 columns=100
 " 设置状态行显示常用信息
@@ -161,7 +160,7 @@ endfunction
 set statusline=%<%1*[B-%n/%{Buf_total_num()}]%*
 set statusline+=%2*\[%{File_size(@%)}%*
 set statusline+=%3*->%F\]%*
-set statusline+=%=%4*『%{exists('g:loaded_ale')?LinterStatus():'～'}』%{exists('g:loaded_fugitive')?fugitive#statusline():'～'}%*
+set statusline+=%4*『%{exists('g:loaded_ale')?LinterStatus():'～'}』%{exists('g:loaded_fugitive')?fugitive#statusline():'～'}%*
 set statusline+=%5*%m%r%y%*
 set statusline+=%6*\[%{&ff}~%{\"\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"\|\"}%(%l:%c%V%)%*
 set statusline+=%7*~%P\]%*
@@ -188,6 +187,7 @@ endif
 set incsearch
 " 搜索时大小写不敏感
 set ignorecase
+set smartcase
 
 set number
 
@@ -202,6 +202,21 @@ set guioptions-=L
 set guioptions-=r
 set guioptions-=b
 set guiheadroom=0
+
+" 出现问题时恢复文件
+"交换文件主要用于系统崩溃时恢复文件，文件名的开头是.、结尾是.swp
+set directory=~/.vim/swp//
+set undodir=~/.vim/undodir//
+set undofile
+
+" 监视文件改动
+set autoread
+
+" 命令模式下，底部操作指令按下 Tab 键自动补全。
+" 第一次按下 Tab，会显示所有匹配的操作指令的清单；
+" 第二次按下 Tab，会依次选择各个指令
+set wildmenu
+set wildmode=longest:list,full
 
 """"""""""""""""""""""""""""""""""""""""""""
 "Format
@@ -218,6 +233,7 @@ filetype indent plugin on
 "set foldmethod=marker
 "关闭自动折叠
 set nofoldenable
+
 
 """"""""""""""""""""""""""""""""""""""""""""
 "Key
@@ -292,7 +308,11 @@ endfunc
 "美化
 """"""""""""""""""""""""""""""""""""""""""""
 syntax on
-set background=light
+if has("gui_running")
+    set background=dark
+else
+    set background=light
+endif
 colorscheme solarized
 
 "异步语法检查
@@ -356,10 +376,6 @@ let g:indentLine_color_gui = '#A4E57E'
 "撤销树
 """"""""""""""""""""""""""""""""""""""""""""
 nnoremap <leader>ut :UndotreeToggle<cr>
-if has("persistent_undo")
-    set undodir=~/.vim/undodir/
-    set undofile
-endif
 
 "multiple selections
 """"""""""""""""""""""""""""""""""""""""""""
@@ -488,11 +504,26 @@ au Syntax * RainbowParenthesesLoadBraces
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                           auto setting
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 针对python文件自动添加头部信息
+func SetTitle()
+    call setline(1, "\#!/usr/bin/python")
+    call setline(2, "\# -*- coding=utf8 -*-")
+    call setline(3, "\"\"\"")
+    call setline(4, "\# @Author : lart")
+    call setline(5, "\# @Created Time : ".strftime("%Y-%m-%d %H:%M:%S"))
+    call setline(6, "\# @Description : ")
+    call setline(7, "\"\"\"")
+    normal G
+    normal o
+    normal o
+endfunc
 
 " vim 文件折叠方式为 marker
 augroup ft_vim
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker
+
+    autocmd bufnewfile *.py call SetTitle()
 
     " 打开文件总是定位到上次编辑的位置
     autocmd BufReadPost *
