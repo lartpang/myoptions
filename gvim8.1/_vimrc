@@ -1,17 +1,14 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                              Plug
+" Plug
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-call plug#begin('$VIM/vimfiles/my_plugin')
+call plug#begin('~/.vim/my_plugin')
 
 "美化
-Plug 'morhetz/gruvbox'
-Plug 'mhinz/vim-startify'
-Plug 'itchyny/lightline.vim'
+Plug 'altercation/vim-colors-solarized'
 
 "文件树
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'Xuyuanp/nerdtree-git-plugin', { 'on':  'NERDTreeToggle' }
 
 "Git
 Plug 'tpope/vim-fugitive'
@@ -20,7 +17,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'vim-scripts/matchit.zip'
 
 "异步语法检查
-Plug 'w0rp/ale'
+Plug 'w0rp/ale', { 'on': 'ALEToggle' }
 
 "对齐
 Plug 'junegunn/vim-easy-align'
@@ -29,7 +26,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'Yggdroot/indentLine'
 
 "撤销树
-Plug 'mbbill/undotree'
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 
 "multiple selections
 Plug 'terryma/vim-multiple-cursors'
@@ -39,6 +36,8 @@ Plug 'bronson/vim-trailing-whitespace'
 
 "括号补全
 Plug 'jiangmiao/auto-pairs'
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'tpope/vim-surround'
 
 "代码补全
 Plug 'maralla/completor.vim'
@@ -46,13 +45,14 @@ Plug 'maralla/completor-neosnippet'
 Plug 'Shougo/neosnippet-snippets'
 
 "Tag文件窗口
-Plug 'vim-scripts/taglist.vim'
+Plug 'vim-scripts/taglist.vim', { 'on':  'TlistToggle' }
 
 "注释
 Plug 'scrooloose/nerdcommenter'
 
 "语言类
 Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
+Plug 'tweekmonster/impsort.vim', {'for': 'python'}
 
 "全局搜索
 Plug 'dkprice/vim-easygrep'
@@ -63,13 +63,10 @@ Plug 'ctrlpvim/ctrlp.vim'
 "快速移动
 Plug 'easymotion/vim-easymotion'
 
-
 call plug#end()
 
-filetype indent plugin on
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                           common setting
+" common setting
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""""""""""""""""
@@ -83,11 +80,13 @@ set history=1024
 set autochdir
 autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
 
+set viminfo='100,n$HOME/.vim/files/info/viminfo
+
 set whichwrap=b,s,<,>,[,]
 set nobomb
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 " Vim 的默认寄存器和系统剪贴板共享
-set clipboard+=unnamed
+set clipboard=unnamed
 " 设置 alt 键不映射到菜单栏
 set winaltkeys=no
 
@@ -107,15 +106,73 @@ language messages zh_CN.utf-8
 """"""""""""""""""""""""""""""""""""""""""""
 "GUI
 """"""""""""""""""""""""""""""""""""""""""""
-" 设定命令行的行数为 1
+" 设定命令行的行数为 2
 set cmdheight=2
-" 显示状态栏 (默认值为 1, 无法显示状态栏)
+" 状态栏显示目前所执行的指令
+set showcmd
+
+set guifont=DejaVu\ Sans\ Mono\ 12
+set lines=35 columns=100
+" 设置状态行显示常用信息
+" %F 完整文件路径名
+" %m 当前缓冲被修改标记
+" %m 当前缓冲只读标记
+" %h 帮助缓冲标记
+" %w 预览缓冲标记
+" %Y 文件类型
+" %b ASCII值
+" %B 十六进制值
+" %l 行数
+" %v 列数
+" %p 当前行数占总行数的的百分比
+" %L 总行数
+" %{...} 评估表达式的值，并用值代替
+" %{"[fenc=".(&fenc==""?&enc:&fenc).((exists("+bomb") && &bomb)?"+":"")."]"} 显示文件编码
+" %{&ff} 显示文件类型
+function! Buf_total_num()
+    return len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
+endfunction
+function! File_size(f)
+    let l:size = getfsize(expand(a:f))
+    if l:size == 0 || l:size == -1 || l:size == -2
+        return ''
+    endif
+    if l:size < 1024
+        return l:size.' bytes'
+    elseif l:size < 1024*1024
+        return printf('%.1f', l:size/1024.0).'k'
+    elseif l:size < 1024*1024*1024
+        return printf('%.1f', l:size/1024.0/1024.0) . 'm'
+    else
+        return printf('%.1f', l:size/1024.0/1024.0/1024.0) . 'g'
+    endif
+endfunction
+function! LinterStatus() abort
+    let l:counts = ale#statusline#Count(bufnr(''))
+    let l:all_errors = l:counts.error + l:counts.style_error
+    let l:all_non_errors = l:counts.total - l:all_errors
+    return l:counts.total == 0 ? 'OK' : printf(
+    \   '%dW %dE',
+    \   all_non_errors,
+    \   all_errors
+    \)
+endfunction
+"buffer_num
+set statusline=%<%1*[B-%n/%{Buf_total_num()}]%*
+set statusline+=%2*\[%{File_size(@%)}%*
+set statusline+=%3*->%F\]%*
+set statusline+=%=%4*『%{exists('g:loaded_ale')?LinterStatus():'～'}』%{exists('g:loaded_fugitive')?fugitive#statusline():'～'}%*
+set statusline+=%5*%m%r%y%*
+set statusline+=%6*\[%{&ff}~%{\"\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"\|\"}%(%l:%c%V%)%*
+set statusline+=%7*~%P\]%*
+
+" 设置 laststatus = 0 ，不显式状态行
+" 设置 laststatus = 1 ，仅当窗口多于一个时，显示状态行
+" 设置 laststatus = 2 ，总是显式状态行
 set laststatus=2
-" 设置 gvim 显示字体
-set guifont=Inziu_Iosevka_SC:h12
 
 " 使用指令变大变小
-command! FontBigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
+command! FontBigger :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
 command! FontSmaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
 
 set cursorline
@@ -123,8 +180,8 @@ set cursorcolumn
 
 set t_Co=256
 if has("gui_running")
-  " Switch on highlighting the last used search pattern.
-  set hlsearch
+    " Switch on highlighting the last used search pattern.
+    set hlsearch
 endif
 
 " 开启实时搜索功能
@@ -133,8 +190,6 @@ set incsearch
 set ignorecase
 
 set number
-" 窗口大小
-" set lines=30 columns=100
 
 " 分割出来的窗口位于当前窗口下边/右边
 set splitbelow
@@ -146,6 +201,7 @@ set guioptions-=m
 set guioptions-=L
 set guioptions-=r
 set guioptions-=b
+set guiheadroom=0
 
 """"""""""""""""""""""""""""""""""""""""""""
 "Format
@@ -156,7 +212,8 @@ set tabstop=4
 set shiftwidth=4
 set softtabstop=4
 set expandtab
-syntax on
+
+filetype indent plugin on
 
 "set foldmethod=marker
 "关闭自动折叠
@@ -179,7 +236,6 @@ inoremap jk <ESC>
 " 定义vim设置文件内容相关
 nnoremap <leader>ev :edit $MYVIMRC<CR>
 nnoremap <leader>sv :source $MYVIMRC<CR>
-autocmd BufWritePost $MYVIMRC source $MYVIMRC
 
 " 打开当前目录 explorer/cmd
 nmap <silent> <leader>exp :!start explorer %:p:h<CR>
@@ -190,8 +246,27 @@ nmap <leader>cf :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
 nmap <leader>cp :let @*=substitute(expand("%:p"), "/", "\\", "g")<CR>
 
 " 快速交换当前行位置
-nnoremap [m  :<c-u>execute 'move -1-'. v:count1<cr>
-nnoremap ]m  :<c-u>execute 'move +'. v:count1<cr>
+nnoremap [l :<c-u>execute 'move -1-'. v:count1<cr>
+nnoremap ]l :<c-u>execute 'move +'. v:count1<cr>
+
+" 快速添加空行
+nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
+nnoremap ]<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
+
+" 设定n始终为向后，N始终为向前
+nnoremap <expr> n  'Nn'[v:searchforward]
+nnoremap <expr> N  'nN'[v:searchforward]
+
+" 如果你选中了一行或多行，那么你可以用 < 或 > 来调整他们的缩进。但在调整之后就不会保持选中状态了。
+" 你可以连续按下 g v 来重新选中他们，请参考 :h gv。因此，你可以这样来配置映射：
+xnoremap < <gv
+xnoremap > >gv
+
+" 高级版本的重新绘制屏幕
+" 这个映射就是执行重新绘制，并且取消通过 / 和 ? 匹配字符的高亮，而且还可以修复代码高亮问题
+"（有时候，由于多个代码高亮的脚本重叠，或者规则过于复杂，Vim 的代码高亮显示会出现问题）。
+" 不仅如此，还可以刷新「比较模式」
+nnoremap <leader>rd :nohlsearch<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
 
 " 一键运行
 map <F5> :call CompileRunGcc()<CR>
@@ -207,7 +282,7 @@ func! CompileRunGcc()
         exec "!javac %"
         exec "!java %<"
     elseif &filetype == 'python'
-        exec "!pythonvim %"
+        exec "!python %"
     elseif &filetype == 'sh'
         :!%
     endif
@@ -215,38 +290,17 @@ endfunc
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                           Plug setting
+" Plug setting
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "美化
 """"""""""""""""""""""""""""""""""""""""""""
-set background=dark
-colorscheme gruvbox
-
-set noshowmode
-let g:lightline = {
-      \ 'colorscheme': 'material',
-      \ 'active': {
-      \   'left': [ ['mode', 'paste'],
-      \             ['fugitive', 'readonly', 'filename', 'modified'] ],
-      \   'right': [ [ 'lineinfo' ],
-      \              [ 'percent' ],
-      \              [ 'fileformat', 'fileencoding', 'filetype' ] ]
-      \ },
-      \ 'component': {
-      \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
-      \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
-      \   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
-      \ },
-      \ 'component_visible_condition': {
-      \   'readonly': '(&filetype!="help"&& &readonly)',
-      \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
-      \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
-      \ }
-      \ }
+syntax on
+set background=light
+colorscheme solarized
 
 "文件树
 """"""""""""""""""""""""""""""""""""""""""""
-map <leader>n :NERDTreeToggle<CR>       " 关闭NERDTree快捷键
+map <leader>n :NERDTreeToggle<CR> " 关闭NERDTree快捷键
 ""当NERDTree为剩下的唯一窗口时自动关闭
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 ""修改树的显示图标
@@ -254,8 +308,7 @@ let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
-let NERDTreeAutoCenter=1
-
+let NERDTreeAutoCenter= 1
 " 是否显示隐藏文件
 let NERDTreeShowHidden=0
 " 设置宽度
@@ -263,19 +316,7 @@ let NERDTreeWinSize=25
 " 在终端启动vim时，共享NERDTree
 let g:nerdtree_tabs_open_on_console_startup=1
 " 忽略文件的显示
-let NERDTreeIgnore=['\.pyc','\~$','\.swp','\.class','\.ini','\.exe']
-let g:NERDTreeIndicatorMapCustom = {
-    \ "Modified"  : "✹",
-    \ "Staged"    : "✚",
-    \ "Untracked" : "✭",
-    \ "Renamed"   : "➜",
-    \ "Unmerged"  : "═",
-    \ "Deleted"   : "✖",
-    \ "Dirty"     : "✗",
-    \ "Clean"     : "✔︎",
-    \ 'Ignored'   : "☒",
-    \ "Unknown"   : "?"
-    \ }
+let NERDTreeIgnore=['\.pyc','\~$','\.swp','\.class','\.ini']
 
 "异步语法检查
 """"""""""""""""""""""""""""""""""""""""""""
@@ -287,30 +328,32 @@ let g:ale_sign_warning = '⚡'
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+"文件内容发生变化时不进行检查
+let g:ale_lint_on_text_changed = 'never'
 "打开文件时不进行检查
 let g:ale_lint_on_enter = 0
 
-"普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
-nmap <leader>sj <Plug>(ale_previous_wrap)
-nmap <leader>sn <Plug>(ale_next_wrap)
+nmap <leader>aj <Plug>(ale_previous_wrap)
+nmap <leader>an <Plug>(ale_next_wrap)
+" nmap <leader>af <Plug>(ale_fix)
+" nmap <leader>al <Plug>(ale_lint)
 "<Leader>s触发/关闭语法检查
-nmap <Leader>st :ALEToggle<CR>
+nmap <Leader>at :ALEToggle<CR>
 "<Leader>d查看错误或警告的详细信息
-nmap <Leader>sd :ALEDetail<CR>
-"使用clang对c和c++进行语法检查，对python使用flake8进行语法检查
-let g:ale_linters = {
-\   'c++': ['g++'],
-\   'c': ['gcc'],
-\   'python': ['flake8'],
-\}
+nmap <Leader>ad :ALEDetail<CR>
+
+let g:ale_linters = {'python': ['flake8']}
+let g:ale_fixers = {'python': ['remove_trailing_lines', 'trim_whitespace', 'autopep8']}
+" let g:ale_lint_on_save = 1
+let g:ale_fix_on_save = 1
 
 "对齐
 """"""""""""""""""""""""""""""""""""""""""""
 " 快速对齐
-" ,a=        对齐等号表达
-" ,a:        对齐冒号表达式(json/map等)
+" ,a= 对齐等号表达
+" ,a: 对齐冒号表达式(json/map等)
 " # 默认左对齐
-" ,a<space>  首个空格对齐
+" ,a<space> 首个空格对齐
 " ,a2<space> 第二个空格对齐
 " ,a-<space> 倒数第一个空格对齐
 " ,a-2<space> 倒数第二个空格对齐
@@ -320,7 +363,7 @@ let g:ale_linters = {
 
 vnoremap <silent> <Enter> :EasyAlign<cr>
 if !exists('g:easy_align_delimiters')
-  let g:easy_align_delimiters = {}
+    let g:easy_align_delimiters = {}
 endif
 let g:easy_align_delimiters['#'] = {
 \ 'pattern': '#', 'ignore_groups': ['String']
@@ -337,7 +380,7 @@ let g:indentLine_color_gui = '#A4E57E'
 """"""""""""""""""""""""""""""""""""""""""""
 nnoremap <leader>ut :UndotreeToggle<cr>
 if has("persistent_undo")
-    set undodir=$VIM/undodir/
+    set undodir=~/.vim/undodir/
     set undofile
 endif
 
@@ -361,17 +404,26 @@ nmap <leader>tw :FixWhitespace<cr>
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>\<cr>" : "\<cr>"
+let g:completor_python_binary = '/usr/bin/python'
 
 "taglist
 """""""""""""""""""""""""""""""""""""""""""
+let Tlist_Compact_Format = 1
+let Tlist_GainFocus_On_ToggleOpen = 1
+let Tlist_Close_On_Select = 1
+let Tlist_Exit_OnlyWindow = 1
+" let Tlist_Show_One_File = 1
+"不同时显示多个文件的tag，只显示当前文件的
+let Tlist_Use_Right_Window = 1
+"在右侧窗口中显示taglist窗口
 nmap <leader>tl :TlistToggle<cr>
 
 "注释
 """"""""""""""""""""""""""""""""""""""""""""
-"<leader>cc   加注释
-"<leader>cu   解开注释
-"<leader>c<space>  加上/解开注释, 智能判断
-"<leader>cy   先复制, 再注解(p可以进行黏贴)
+"<leader>cc 加注释
+"<leader>cu 解开注释
+"<leader>c<space> 加上/解开注释, 智能判断
+"<leader>cy 先复制, 再注解(p可以进行黏贴)
 
 " 注释的时候自动加个空格, 强迫症必配
 let g:NERDSpaceDelims=1
@@ -391,23 +443,74 @@ let g:NERDSpaceDelims=1
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 " 使用vim的忽略文件
-set wildignore+=*\\node_modules\\*,*.git*,*.svn*,*.zip*,*.exe* 
+set wildignore+=*\\node_modules\\*,*.git*,*.svn*,*.zip*,*.exe*
 
 "快速移动
 """"""""""""""""""""""""""""""""""""""""""""
-" <leader><leader>w                      从光标位置起，往前（往下）在单词之间移动光标
+" <leader><leader>w                       从光标位置起，往前（往下）在单词之间移动光标
 " <leader><leader>b                       从光标位置起，往后（往上）在单词之间移动光标
 " <leader><leader>s                       从光标位置起，同时往前往后，在单词之间移动光标
-" <leader><leader>f｛char｝          从光标位置起，往前（往下）在单个字符之间移动光标
+" <leader><leader>f｛char｝               从光标位置起，往前（往下）在单个字符之间移动光标
+
+"import快速排序
+""""""""""""""""""""""""""""""""""""""""""""
+nnoremap <leader>is :<c-u>ImpSort!<cr>
+
+"彩虹括号
+""""""""""""""""""""""""""""""""""""""""""""
+let g:rbpt_colorpairs = [
+    \ ['brown',       'RoyalBlue3'],
+    \ ['Darkblue',    'SeaGreen3'],
+    \ ['darkgray',    'DarkOrchid3'],
+    \ ['darkgreen',   'firebrick3'],
+    \ ['darkcyan',    'RoyalBlue3'],
+    \ ['darkred',     'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['brown',       'firebrick3'],
+    \ ['gray',        'RoyalBlue3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['Darkblue',    'firebrick3'],
+    \ ['darkgreen',   'RoyalBlue3'],
+    \ ['darkcyan',    'SeaGreen3'],
+    \ ['darkred',     'DarkOrchid3'],
+    \ ['red',         'firebrick3'],
+    \ ]
+" 不加入这行, 防止黑色括号出现, 很难识别
+" \ ['black',       'SeaGreen3'],
+let g:rbpt_max = 16
+let g:rbpt_loadcmd_toggle = 0
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+
+"vim-surround
+""""""""""""""""""""""""""""""""""""""""""""
+" 光标在
+" “Hello world!”
+" 中时按下cs"'，则会替换双引号为单引号：
+" ‘Hello world!’
+" 继续按下cs'<q>，则会替换单引号为 “标签”
+" 'Hello world!'
+" 按下cst"，则回到初始的双引号：
+" “Hello world!”
+" 要删除符号，则按下ds"
+" Hello world!
+" 当光标在hello上时，按下ysiw]，则会变为
+" [Hello] world!
+" 添加包围符号的命令是ys(ys可以记为you surround)，命令后同样跟两个参数，第一
+" 个是一个vim“动作”（motion）或者是一个文本对象,其中motion即vim动作，比如说w
+" 向后一个单词。文本对象简单的来说主要是来通过一些分隔符来标识一段文本，比如
+" iw就是一个文本对象，即光标下的单词。
+" 另外： yss 命令可以用于整行操作，忽略中间的空格,
+" yS 和 ySS 还能让包围内容单独一行并且加上缩进。
+" 加包围符号还有个非常好用的方式：在可视模式v下，按下S后即可添加想要添加的包围符号了。
+" 再说一个小技巧：在包围符号为括时，输入左括号 (或者{ ,则会留一个空格
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                           auto setting
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-augroup vimrcEx
-    au!
-    autocmd FileType text setlocal textwidth=78
-augroup END
 
 " vim 文件折叠方式为 marker
 augroup ft_vim
@@ -416,7 +519,7 @@ augroup ft_vim
 
     " 打开文件总是定位到上次编辑的位置
     autocmd BufReadPost *
-      \ if line("'\"") > 1 && line("'\"") <= line("$") |
-      \   exe "normal! g`\"" |
-      \ endif
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
 augroup END
