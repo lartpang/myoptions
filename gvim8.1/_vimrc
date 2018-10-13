@@ -7,9 +7,6 @@ call plug#begin('~/.vim/my_plugin')
 "美化
 Plug 'altercation/vim-colors-solarized'
 
-"文件树
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-
 "Git
 Plug 'tpope/vim-fugitive'
 
@@ -76,12 +73,15 @@ set nocompatible
 set nobackup
 set noswapfile
 set history=1024
+
 "自动设置当前目录为正在编辑的目录
-set autochdir
-autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
+if exists('+autochdir')
+  set autochdir
+else
+  autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
+endif
 
 set viminfo='100,n$HOME/.vim/files/info/viminfo
-
 set whichwrap=b,s,<,>,[,]
 set nobomb
 set backspace=indent,eol,start whichwrap+=<,>,[,]
@@ -111,7 +111,7 @@ set cmdheight=2
 " 状态栏显示目前所执行的指令
 set showcmd
 
-set guifont=DejaVu\ Sans\ Mono\ 12
+set guifont=Monaco\ 12
 set lines=35 columns=100
 " 设置状态行显示常用信息
 " %F 完整文件路径名
@@ -278,9 +278,6 @@ func! CompileRunGcc()
     elseif &filetype == 'cpp'
         exec "!g++ % -o %<"
         exec "! %<"
-    elseif &filetype == 'java'
-        exec "!javac %"
-        exec "!java %<"
     elseif &filetype == 'python'
         exec "!python %"
     elseif &filetype == 'sh'
@@ -297,26 +294,6 @@ endfunc
 syntax on
 set background=light
 colorscheme solarized
-
-"文件树
-""""""""""""""""""""""""""""""""""""""""""""
-map <leader>n :NERDTreeToggle<CR> " 关闭NERDTree快捷键
-""当NERDTree为剩下的唯一窗口时自动关闭
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-""修改树的显示图标
-let g:NERDTreeDirArrowExpandable = '▸'
-let g:NERDTreeDirArrowCollapsible = '▾'
-let NERDTreeMinimalUI = 1
-let NERDTreeDirArrows = 1
-let NERDTreeAutoCenter= 1
-" 是否显示隐藏文件
-let NERDTreeShowHidden=0
-" 设置宽度
-let NERDTreeWinSize=25
-" 在终端启动vim时，共享NERDTree
-let g:nerdtree_tabs_open_on_console_startup=1
-" 忽略文件的显示
-let NERDTreeIgnore=['\.pyc','\~$','\.swp','\.class','\.ini']
 
 "异步语法检查
 """"""""""""""""""""""""""""""""""""""""""""
@@ -514,7 +491,7 @@ au Syntax * RainbowParenthesesLoadBraces
 
 " vim 文件折叠方式为 marker
 augroup ft_vim
-    au!
+    autocmd!
     autocmd FileType vim setlocal foldmethod=marker
 
     " 打开文件总是定位到上次编辑的位置
