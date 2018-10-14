@@ -6,6 +6,7 @@ call plug#begin('~/.vim/my_plugin')
 
 "美化
 Plug 'altercation/vim-colors-solarized'
+Plug 'itchyny/lightline.vim'
 
 "Git
 Plug 'tpope/vim-fugitive'
@@ -60,6 +61,9 @@ Plug 'ctrlpvim/ctrlp.vim'
 "快速移动
 Plug 'easymotion/vim-easymotion'
 
+"快速执行终端指令
+Plug 'skywind3000/asyncrun.vim'
+
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -108,62 +112,12 @@ language messages zh_CN.utf-8
 """"""""""""""""""""""""""""""""""""""""""""
 " 设定命令行的行数为 2
 set cmdheight=1
+set noshowmode
 " 状态栏显示目前所执行的指令
-set showcmd
 set guifont=Monaco\ 12
-set lines=35 columns=100
-" 设置状态行显示常用信息
-" %F 完整文件路径名
-" %m 当前缓冲被修改标记
-" %m 当前缓冲只读标记
-" %h 帮助缓冲标记
-" %w 预览缓冲标记
-" %Y 文件类型
-" %b ASCII值
-" %B 十六进制值
-" %l 行数
-" %v 列数
-" %p 当前行数占总行数的的百分比
-" %L 总行数
-" %{...} 评估表达式的值，并用值代替
-" %{"[fenc=".(&fenc==""?&enc:&fenc).((exists("+bomb") && &bomb)?"+":"")."]"} 显示文件编码
-" %{&ff} 显示文件类型
-function! Buf_total_num()
-    return len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
-endfunction
-function! File_size(f)
-    let l:size = getfsize(expand(a:f))
-    if l:size == 0 || l:size == -1 || l:size == -2
-        return ''
-    endif
-    if l:size < 1024
-        return l:size.' bytes'
-    elseif l:size < 1024*1024
-        return printf('%.1f', l:size/1024.0).'k'
-    elseif l:size < 1024*1024*1024
-        return printf('%.1f', l:size/1024.0/1024.0) . 'm'
-    else
-        return printf('%.1f', l:size/1024.0/1024.0/1024.0) . 'g'
-    endif
-endfunction
-function! LinterStatus() abort
-    let l:counts = ale#statusline#Count(bufnr(''))
-    let l:all_errors = l:counts.error + l:counts.style_error
-    let l:all_non_errors = l:counts.total - l:all_errors
-    return l:counts.total == 0 ? 'OK' : printf(
-    \   '%dW %dE',
-    \   all_non_errors,
-    \   all_errors
-    \)
-endfunction
-"buffer_num
-set statusline=%<%1*[B-%n/%{Buf_total_num()}]%*
-set statusline+=%2*\[%{File_size(@%)}%*
-set statusline+=%3*->%F\]%*
-set statusline+=%4*『%{exists('g:loaded_ale')?LinterStatus():'～'}』%{exists('g:loaded_fugitive')?fugitive#statusline():'～'}%*
-set statusline+=%5*%m%r%y%*
-set statusline+=%6*\[%{&ff}~%{\"\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"\|\"}%(%l:%c%V%)%*
-set statusline+=%7*~%P\]%*
+if has("gui_running")
+    set lines=35 columns=100
+endif
 
 " 设置 laststatus = 0 ，不显式状态行
 " 设置 laststatus = 1 ，仅当窗口多于一个时，显示状态行
@@ -177,10 +131,11 @@ command! FontSmaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0
 set cursorline
 set cursorcolumn
 
-set t_Co=256
 if has("gui_running")
     " Switch on highlighting the last used search pattern.
     set hlsearch
+else
+    set t_Co=256
 endif
 
 " 开启实时搜索功能
@@ -315,6 +270,23 @@ else
 endif
 colorscheme solarized
 
+"lightline
+""""""""""""""""""""""""""""""""""""""""""""
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'readonly': 'LightlineReadonly',
+      \ },
+      \ }
+
+function! LightlineReadonly()
+  return &readonly && &filetype !=# 'help' ? 'RO' : ''
+endfunction
+
 "异步语法检查
 """"""""""""""""""""""""""""""""""""""""""""
 let g:ale_set_highlights = 0
@@ -436,7 +408,7 @@ let g:NERDSpaceDelims=1
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 " 使用vim的忽略文件
-set wildignore+=*\\node_modules\\*,*.git*,*.svn*,*.zip*,*.exe*
+set wildignore+=*\\node_modules\\*,*.git*,*.svn*,*.zip*,*.exe*,*.pyc*,*.bin*,*.7z*,*.rar*
 
 "快速移动
 """"""""""""""""""""""""""""""""""""""""""""
@@ -500,12 +472,14 @@ au Syntax * RainbowParenthesesLoadBraces
 " 加包围符号还有个非常好用的方式：在可视模式v下，按下S后即可添加想要添加的包围符号了。
 " 再说一个小技巧：在包围符号为括时，输入左括号 (或者{ ,则会留一个空格
 
+" 快速执行终端指令
+let g:asyncrun_open = 8
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                           auto setting
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 针对python文件自动添加头部信息
-func SetTitle()
+func! SetTitle()
     call setline(1, "\#!/usr/bin/python")
     call setline(2, "\# -*- coding=utf8 -*-")
     call setline(3, "\"\"\"")
