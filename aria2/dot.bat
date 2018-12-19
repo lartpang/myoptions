@@ -1,3 +1,4 @@
+:: @ LuticLiu(https://www.appinn.com/ara2-add-trackers-list-for-speed-up/)
 :: Aria2 更新 Trackers
 @echo off
 
