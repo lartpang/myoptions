@@ -1,0 +1,37 @@
+{
+	"afn_blacklist_scopes":
+	[
+		"string.regexp.js"
+	],
+	"afn_insert_dimensions": true,
+	"afn_insert_width_first": false,
+	"afn_proj_root": "../",
+	"afn_template_languages": false,
+	"afn_use_keybinding": false,
+	"afn_use_project_root": true,
+	"afn_valid_scopes":
+	[
+		"string",
+		"css",
+		"sass",
+		"less",
+		"scss"
+	],
+	"color_scheme": "Packages/Color Scheme - Default/Breakers.sublime-color-scheme",
+	"draw_minimap_border": true,
+	"font_face": "Inziu Iosevka Slab SC",
+	"font_size": 11,
+	"ignored_packages":
+	[
+		"Markdown",
+		"Vintage"
+	],
+	"rulers":
+	[
+		100
+	],
+	"show_encoding": true,
+	"theme": "Adaptive.sublime-theme",
+	"translate_tabs_to_spaces": true,
+	"word_wrap": "true"
+}
