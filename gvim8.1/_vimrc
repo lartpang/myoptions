@@ -6,30 +6,15 @@
 
 call plug#begin('~/.vim/my_plugin')
 
-"美化
-Plug 'altercation/vim-colors-solarized'
-Plug 'itchyny/lightline.vim'
-
-"Git
-Plug 'tpope/vim-fugitive'
+"状态栏
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 "匹配跳转
 Plug 'vim-scripts/matchit.zip'
 
-"异步语法检查
-Plug 'w0rp/ale', { 'on': 'ALEToggle' }
-
-"对齐
-Plug 'junegunn/vim-easy-align'
-
-"对齐线
-Plug 'Yggdroot/indentLine'
-
-"撤销树
-Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-
-"multiple selections
-Plug 'terryma/vim-multiple-cursors'
+"文件树
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 
 "Highlights trailing whitespace
 Plug 'bronson/vim-trailing-whitespace'
@@ -39,20 +24,8 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'kien/rainbow_parentheses.vim'
 Plug 'tpope/vim-surround'
 
-"代码补全
-Plug 'maralla/completor.vim'
-Plug 'maralla/completor-neosnippet'
-Plug 'Shougo/neosnippet-snippets'
-
-"Tag文件窗口
-Plug 'vim-scripts/taglist.vim', { 'on':  'TlistToggle' }
-
 "注释
 Plug 'scrooloose/nerdcommenter'
-
-"语言类
-Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
-Plug 'tweekmonster/impsort.vim', {'for': 'python'}
 
 "全局搜索
 Plug 'dkprice/vim-easygrep'
@@ -63,8 +36,11 @@ Plug 'ctrlpvim/ctrlp.vim'
 "快速移动
 Plug 'easymotion/vim-easymotion'
 
-"快速执行终端指令
-Plug 'skywind3000/asyncrun.vim'
+"Coding
+Plug 'machakann/vim-highlightedyank'
+" zo, zO, zc, zC
+Plug 'tmhedberg/SimpylFold', { 'for': 'python' }
+Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 
 call plug#end()
 
@@ -116,7 +92,6 @@ language messages zh_CN.utf-8
 set cmdheight=1
 set noshowmode
 " 状态栏显示目前所执行的指令
-set guifont=Monaco\ 12
 if has("gui_running")
     set lines=35 columns=100
 endif
@@ -158,7 +133,6 @@ set guioptions-=m
 set guioptions-=L
 set guioptions-=r
 set guioptions-=b
-set guiheadroom=0
 
 " 出现问题时恢复文件
 "交换文件主要用于系统崩溃时恢复文件，文件名的开头是.、结尾是.swp
@@ -187,9 +161,23 @@ set expandtab
 
 filetype indent plugin on
 
-"set foldmethod=marker
+" zc     折叠
+" zC     对所在范围内所有嵌套的折叠点进行折叠
+" zo     展开折叠
+" zO     对所在范围内所有嵌套的折叠点展开
+" [z     到当前打开的折叠的开始处。
+" ]z     到当前打开的折叠的末尾处。
+" zj     向下移动。到达下一个折叠的开始处。关闭的折叠也被计入。
+" zk     向上移动到前一折叠的结束处。关闭的折叠也被计入。
+" manual          手工定义折叠
+" indent          更多的缩进表示更高级别的折叠
+" expr            用表达式来定义折叠
+" syntax          用语法高亮来定义折叠
+" diff            对没有更改的文本进行折叠
+" marker          对文中的标志折叠
+set foldmethod=marker
 "关闭自动折叠
-set nofoldenable
+" set nofoldenable
 
 
 """"""""""""""""""""""""""""""""""""""""""""
@@ -204,23 +192,25 @@ nmap <Leader>q :q<CR>
 nmap <Leader>w :w<CR>
 
 " 定义退出模式快捷键
-inoremap jk <ESC>
+inoremap kj <ESC>
 
 " 定义vim设置文件内容相关
 nnoremap <leader>ev :edit $MYVIMRC<CR>
 nnoremap <leader>sv :source $MYVIMRC<CR>
 
 " 打开当前目录 explorer/cmd
-nmap <silent> <leader>exp :!start explorer %:p:h<CR>
-nmap <silent> <leader>cmd :!start cmd /k cd %:p:h<cr>
+" nmap <silent> <leader>exp :!start explorer %:p:h<CR>
+" nmap <silent> <leader>cmd :!start cmd /k cd %:p:h<cr>
 
 " 复制当前文件/路径到剪贴板
-nmap <leader>cf :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
-nmap <leader>cp :let @*=substitute(expand("%:p"), "/", "\\", "g")<CR>
+nmap <leader>cf :let @+=expand("%")<CR>
+nmap <leader>cp :let @+=expand("%:p")<CR>
 
 " 快速交换当前行位置
-nnoremap [l :<c-u>execute 'move -1-'. v:count1<cr>
-nnoremap ]l :<c-u>execute 'move +'. v:count1<cr>
+" 实际上交换本行和下面的行最简单可以使用 ddp
+" 删除本行,下行补上,粘贴后贴到了下行
+" nnoremap [l :<c-u>execute 'move -1-'. v:count1<cr>
+" nnoremap ]l :<c-u>execute 'move +'. v:count1<cr>
 
 " 快速添加空行
 nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
@@ -265,135 +255,38 @@ endfunc
 "美化
 """"""""""""""""""""""""""""""""""""""""""""
 syntax on
-if has("gui_running")
-    set background=dark
-else
-    set background=light
-endif
-colorscheme solarized
 
-"lightline
+let g:airline_theme='bubblegum' " <theme> 代表某个主题的名称
+" 开启tabline功能
+let g:airline#extensions#tabline#enabled = 1
+" 设置tabline分隔符
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+
+"文件树
 """"""""""""""""""""""""""""""""""""""""""""
-let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component_function': {
-      \   'readonly': 'LightlineReadonly',
-      \ },
-      \ }
-
-function! LightlineReadonly()
-  return &readonly && &filetype !=# 'help' ? 'RO' : ''
-endfunction
-
-"异步语法检查
-""""""""""""""""""""""""""""""""""""""""""""
-let g:ale_set_highlights = 0
-"自定义error和warning图标
-let g:ale_sign_error = '✗'
-let g:ale_sign_warning = '⚡'
-"显示Linter名称,出错或警告等相关信息
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-"文件内容发生变化时不进行检查
-let g:ale_lint_on_text_changed = 'never'
-"打开文件时不进行检查
-let g:ale_lint_on_enter = 0
-
-nmap <leader>aj <Plug>(ale_previous_wrap)
-nmap <leader>an <Plug>(ale_next_wrap)
-" nmap <leader>af <Plug>(ale_fix)
-" nmap <leader>al <Plug>(ale_lint)
-"<Leader>s触发/关闭语法检查
-nmap <Leader>at :ALEToggle<CR>
-"<Leader>d查看错误或警告的详细信息
-nmap <Leader>ad :ALEDetail<CR>
-
-let g:ale_linters = {'python': ['flake8']}
-let g:ale_fixers = {'python': ['remove_trailing_lines', 'trim_whitespace', 'autopep8']}
-" let g:ale_lint_on_save = 1
-let g:ale_fix_on_save = 1
-
-"对齐
-""""""""""""""""""""""""""""""""""""""""""""
-" 快速对齐
-" ,a= 对齐等号表达
-" ,a: 对齐冒号表达式(json/map等)
-" # 默认左对齐
-" ,a<space> 首个空格对齐
-" ,a2<space> 第二个空格对齐
-" ,a-<space> 倒数第一个空格对齐
-" ,a-2<space> 倒数第二个空格对齐
-" ,a*<space> 所有空格依次对齐
-" # 右对齐
-" ,a<Enter>*<space>
-
-vnoremap <silent> <Enter> :EasyAlign<cr>
-if !exists('g:easy_align_delimiters')
-    let g:easy_align_delimiters = {}
-endif
-let g:easy_align_delimiters['#'] = {
-\ 'pattern': '#', 'ignore_groups': ['String']
-\ }
-
-"对齐线
-"""""""""""""""""""""""""""""""""""""""""""""
-" Vim
-let g:indentLine_color_term = 239
-" GVim
-let g:indentLine_color_gui = '#A4E57E'
-
-"撤销树
-""""""""""""""""""""""""""""""""""""""""""""
-nnoremap <leader>ut :UndotreeToggle<cr>
-
-"multiple selections
-""""""""""""""""""""""""""""""""""""""""""""
-" 关闭默认匹配
-let g:multi_cursor_use_default_mapping=0
-" 自定义匹配
-let g:multi_cursor_next_key='<leader>mn'
-let g:multi_cursor_prev_key='<leader>mp'
-let g:multi_cursor_skip_key='<leader>ms'
-let g:multi_cursor_quit_key='<Esc>'
+nnoremap <leader>nt :NERDTreeToggle<CR>
+"设定 NERDTree 视窗大小
+let g:NERDTreeWinSize = 30
+"不显示隐藏文件
+let g:NERDTreeHidden  = 0
+"Making it prettier
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
+""修改树的显示图标
+let g:NERDTreeDirArrowExpandable = '►'
+let g:NERDTreeDirArrowCollapsible = '▼'
+let NERDTreeAutoCenter=1
+" 在终端启动vim时，共享NERDTree
+let g:nerdtree_tabs_open_on_console_startup=1
+" 忽略一下文件的显示
+let NERDTreeIgnore=['\.pyc','\~$','\.swp']
+""当NERDTree为剩下的唯一窗口时自动关闭
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 "Highlights trailing whitespace
 """"""""""""""""""""""""""""""""""""""""""""
 nmap <leader>tw :FixWhitespace<cr>
-
-"代码补全
-""""""""""""""""""""""""""""""""""""""""""""
-"使用tab补全
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <cr> pumvisible() ? "\<C-y>\<cr>" : "\<cr>"
-let g:completor_python_binary = '/usr/bin/python'
-
-"taglist
-"""""""""""""""""""""""""""""""""""""""""""
-let Tlist_Compact_Format = 1
-let Tlist_GainFocus_On_ToggleOpen = 1
-let Tlist_Close_On_Select = 1
-let Tlist_Exit_OnlyWindow = 1
-" let Tlist_Show_One_File = 1
-"不同时显示多个文件的tag，只显示当前文件的
-let Tlist_Use_Right_Window = 1
-"在右侧窗口中显示taglist窗口
-nmap <leader>tl :TlistToggle<cr>
-
-"注释
-""""""""""""""""""""""""""""""""""""""""""""
-"<leader>cc 加注释
-"<leader>cu 解开注释
-"<leader>c<space> 加上/解开注释, 智能判断
-"<leader>cy 先复制, 再注解(p可以进行黏贴)
-
-" 注释的时候自动加个空格, 强迫症必配
-let g:NERDSpaceDelims=1
 
 "全局搜索
 """"""""""""""""""""""""""""""""""""""""""""
@@ -418,10 +311,6 @@ set wildignore+=*\\node_modules\\*,*.git*,*.svn*,*.zip*,*.exe*,*.pyc*,*.bin*,*.7
 " <leader><leader>b                       从光标位置起，往后（往上）在单词之间移动光标
 " <leader><leader>s                       从光标位置起，同时往前往后，在单词之间移动光标
 " <leader><leader>f｛char｝               从光标位置起，往前（往下）在单个字符之间移动光标
-
-"import快速排序
-""""""""""""""""""""""""""""""""""""""""""""
-nnoremap <leader>is :<c-u>ImpSort!<cr>
 
 "彩虹括号
 """"""""""""""""""""""""""""""""""""""""""""
@@ -474,21 +363,28 @@ au Syntax * RainbowParenthesesLoadBraces
 " 加包围符号还有个非常好用的方式：在可视模式v下，按下S后即可添加想要添加的包围符号了。
 " 再说一个小技巧：在包围符号为括时，输入左括号 (或者{ ,则会留一个空格
 
-" 快速执行终端指令
-let g:asyncrun_open = 8
+"jedi-vim
+""""""""""""""""""""""""""""""""""""""""""""
+let g:jedi#completions_command = "<C-N>"
+let g:jedi#goto_command = "<leader>gc"
+let g:jedi#goto_assignments_command = "<leader>ga"
+let g:jedi#goto_definitions_command = "<leader>gd"
+let g:jedi#documentation_command = "K"
+"let g:jedi#usages_command = "<leader>n"
+"let g:jedi#rename_command = "<leader>r"
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                           auto setting
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 针对python文件自动添加头部信息
 func! SetTitle()
-    call setline(1, "\#!/usr/bin/python")
-    call setline(2, "\# -*- coding=utf8 -*-")
-    call setline(3, "\"\"\"")
-    call setline(4, "\# @Author : lart")
-    call setline(5, "\# @Created Time : ".strftime("%Y-%m-%d %H:%M:%S"))
-    call setline(6, "\# @Description : ")
-    call setline(7, "\"\"\"")
+    call setline(1, "\# -*- coding=utf8 -*-")
+    call setline(2, "\"\"\"")
+    call setline(3, "\# @Author : lart")
+    call setline(4, "\# @Created Time : ".strftime("%Y-%m-%d %H:%M:%S"))
+    call setline(5, "\# @Description :")
+    call setline(6, "\"\"\"")
     normal G
     normal o
     normal o
