@@ -72,30 +72,38 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-####################################### User configuration
-# my env path is in the file named ".zshenv"
-# about some softwares
-if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
-        source /etc/profile.d/vte.sh
-fi
-
-# my alias
-# zsh
+####################################### My Alias
 alias zshconfig="vim ~/.zshrc"
 
-# python
 alias jn='jupyter notebook'
 alias sa='source activate'
 alias sd='source deactivate'
+alias nv='nvim'
 
 # terminal
 alias rm='rm -i'
 
-# thefuck
-eval $(thefuck --alias)
-
 # tensorboard
 alias tb='tensorboard --logdir'
 
-# my source
-source ~/Softwares/Z/z.sh
+####################################### My PATH
+export PATH=/home/lart/.local/bin:$PATH
+export MANPATH="/usr/local/man:$MANPATH"
+export LANG=zh_CN.UTF-8
+export TERM=xterm-256color
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/lart/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/lart/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/lart/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/lart/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
