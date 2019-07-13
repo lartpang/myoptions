@@ -1,0 +1,8 @@
+# 配合bash使用，可以在已经写出来的命令后查询历史
+
+# 前两句使用 Up 和 Down 在 history 中进行搜索。
+# 后一句是按 Tab 显示自动完成。
+# 如果结合 Ctrl - R，则更加好用。
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+set show-all-if-ambiguous on
