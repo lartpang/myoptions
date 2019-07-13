@@ -14,6 +14,7 @@ HISTCONTROL=ignoreboth
 
 # append to the history file, don't overwrite it
 shopt -s histappend
+PROMPT_COMMAND='history -a'
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
@@ -116,22 +117,26 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# cuda
-export PATH=/usr/local/cuda-9.0/bin${PATH:+:${PATH}}
-export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
-
-# added by Miniconda3 installer
-export PATH="/home/lart/miniconda3/bin:$PATH"
-
-#my alias
-alias jn='jupyter notebook'
-alias sa='source activate'
-alias sd='source deactivate'
-
-#tilix
-if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
-    source /etc/profile.d/vte.sh
+# custom config ###############################################################33
+# export
+if [ -f ~/.bash_path ]; then
+    . ~/.bash_path
 fi
 
-#my bash
-export PS1="\[\033[1;35m\]\A\[\033[0m\]~\[\033[1;33m\]\u@\H\[\033[0m\]=>\[\033[1;32m\]\w\[\033[0m\]\n\$"
+# source
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/lart/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/lart/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/lart/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/lart/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
