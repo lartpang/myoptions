@@ -9,6 +9,7 @@ conda install pytorch torchvision cudatoolkit=9.0 cudnn -c pytorch
 
 # some tools
 pip install tqdm
+# https://github.com/Lyken17/pytorch-OpCounter
 pip install thop
 
 # install tensorboard
