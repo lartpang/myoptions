@@ -15,7 +15,7 @@ pip install thop
 pip install tensorboardX
 pip install tensorflow=1.13.1
 
-# install pydensecrf
+# install pydensecrf：https://github.com/lucasb-eyer/pydensecrf
 pip install cython
 pip install git+https://github.com/lucasb-eyer/pydensecrf.git
 ```
