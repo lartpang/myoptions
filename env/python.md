@@ -11,10 +11,11 @@ conda install pytorch torchvision cudatoolkit=9.0 cudnn -c pytorch
 pip install tqdm
 # https://github.com/Lyken17/pytorch-OpCounter
 pip install thop
+pip install prefetch-generator
 
 # install tensorboard
 pip install tensorboardX
-pip install tensorflow=1.13.1
+pip install tensorflow==1.13.1
 
 # install pydensecrf：https://github.com/lucasb-eyer/pydensecrf
 pip install cython
