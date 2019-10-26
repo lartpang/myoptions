@@ -5,10 +5,11 @@
 * gdebi
 * vim
 * fcitx
-  * sogoupinyin
+* sogoupinyin
 * wps
 * nutstore
 * chrome
+* gnome-tweak-tool
 
 ## 开发
 
