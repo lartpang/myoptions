@@ -1,54 +1,153 @@
 {
-    "window.titleBarStyle": "native",
-    "workbench.colorTheme": "Solarized Light",
-    "workbench.iconTheme": "vs-minimal",
-    "editor.renderWhitespace": "boundary",
-    "editor.cursorStyle": "block",
-    "editor.wordWrap": "bounded",
-    "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true,
-        "**/.idea": true
-    },
-    "editor.acceptSuggestionOnEnter": "off",
-    "editor.accessibilitySupport": "off",
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.fontFamily": "'Sarasa Mono T SC'",
+    "editor.fontLigatures": true,
+    "breadcrumbs.enabled": true,
+    "window.titleBarStyle": "custom",
+    "editor.fontSize": 16,
+    "editor.autoIndent": true,
+    "editor.codeLens": false,
     "editor.cursorBlinking": "smooth",
-    "editor.fontSize": 15,
-    "editor.fontFamily": "'Source Code Pro', 'LiHei Pro'",
-    "editor.mouseWheelZoom": true,
+    "editor.cursorStyle": "line",
+    "editor.formatOnPaste": true,
+    "editor.formatOnType": false,
+    "editor.formatOnSave": true,
+    "editor.lineHeight": 20,
+    "editor.wordWrap": "on",
     "editor.quickSuggestions": {
         "other": true,
-        "comments": false,
-        "strings": false
+        "comments": true,
+        "strings": true
     },
-    "editor.scrollBeyondLastLine": false,
-    "workbench.activityBar.visible": true,
-    "workbench.editor.labelFormat": "long",
-    "workbench.editor.tabSizing": "shrink",
-    "workbench.startupEditor": "none",
-    "workbench.statusBar.feedback.visible": false,
-    "window.menuBarVisibility": "toggle",
+    "files.autoGuessEncoding": true,
     "files.insertFinalNewline": true,
-    "files.trimFinalNewlines": true,
-    "files.trimTrailingWhitespace": true,
-    "explorer.enableDragAndDrop": false,
-    "explorer.confirmDelete": true,
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/bower_components": true,
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true,
-        "**/.idea": true
+    "editor.renderWhitespace": "all",
+    "window.menuBarVisibility": "default",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "debug.toolBarLocation": "floating",
+    "search.showLineNumbers": true,
+    "workbench.colorCustomizations": {},
+    "zenMode.centerLayout": false,
+    // Latex workshop
+    "latex-workshop.bind.altKeymap.enabled": true,
+    "latex-workshop.latex.autoBuild.run": "onFileChange",
+    "latex-workshop.view.pdf.viewer": "tab",
+    "latex-workshop.intellisense.package.enabled": true,
+    "latex-workshop.intellisense.unimathsymbols.enabled": true,
+    "latex-workshop.intellisense.update.aggressive.enabled": true,
+    "latex-workshop.latex.autoClean.run": "onFailed",
+    "latex-workshop.latex.recipe.default": "lastUsed",
+    // 编译工具和命令，也就是后面设置recipe的时候使用的工具的对应配置
+    "latex-workshop.latex.tools": [
+        {
+            "name": "xelatex",
+            "command": "xelatex",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-pdf",
+                "%DOCFILE%"
+            ]
+        },
+        {
+            "name": "pdflatex",
+            "command": "pdflatex",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "%DOCFILE%"
+            ]
+        },
+        {
+            "name": "bibtex",
+            "command": "bibtex",
+            "args": [
+                "%DOCFILE%"
+            ]
+        }
+    ],
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "xelatex",
+            "tools": [
+                "xelatex"
+            ]
+        },
+        {
+            "name": "pdflatex",
+            "tools": [
+                "pdflatex"
+            ]
+        },
+        {
+            "name": "pbpp",
+            "tools": [
+                "pdflatex",
+                "bibtex",
+                "pdflatex",
+                "pdflatex"
+            ]
+        },
+        {
+            "name": "xbxx",
+            "tools": [
+                "xelatex",
+                "bibtex",
+                "xelatex",
+                "xelatex"
+            ]
+        }
+    ],
+    "workbench.colorTheme": "Default Light+",
+    "python.formatting.provider": "yapf",
+    "python.pythonPath": "/home/lart/.conda/envs/pt13/bin/python",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python",
     },
-    "search.usePCRE2": true,
-    "markdown.previewFrontMatter": "show",
-    "markdown.extension.print.absoluteImgPath": false,
-    "markdown.extension.showExplorer": true,
+    "python.jediEnabled": false,
+    "terminal.integrated.inheritEnv": false,
+    "window.zoomLevel": 0,
+    "terminal.integrated.shell.linux": "/bin/bash",
+    "markdown.preview.scrollEditorWithPreview": false,
     "markdown.extension.toc.githubCompatibility": true,
+    // Extension - vscode-pandoc
+    "pandoc.htmlOptString": "-s -f gfm -t html5 -H ./css/pandoc-github.html",
+    "pandoc.pdfOptString": "--pdf-engine=xelatex --toc --from markdown --template eisvogel -V fontsize=12 -V linestretch=1.0 -V papersize=a4paper -V mainfont=\"Sarasa UI SC\" -V monofont=\"Sarasa Mono T SC\" -V CJKmainfont=\"Sarasa UI SC\"",
+    // markdown-formatter
+    // 不格式化
+    "markdownFormatter.codeAreaToBlock": "",
+    // 中文标点格式化为英文
+    // "markdownFormatter.fullWidthTurnHalfWidth": "，、：；！“”‘’（）？。",
+    "markdownFormatter.fullWidthTurnHalfWidth": "auto",
+    "markdownFormatter.spaceAfterFullWidth": false,
+    "markdownFormatter.formatOpt": {
+        "indent_size": 2
+    },
+    "[markdown]": {
+        // 自动保存
+        "editor.formatOnSave": true,
+        // 显示空格
+        "editor.renderWhitespace": "all",
+        // 快速补全
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": true,
+            "strings": true
+        },
+        // snippet 提示优先
+        "editor.snippetSuggestions": "top",
+        "editor.tabCompletion": "on",
+        // 使用enter 接受提示
+        "editor.acceptSuggestionOnEnter": "on",
+        // 默认格式化工具为本工具
+        "editor.defaultFormatter": "mervin.markdown-formatter"
+    },
+    "MarkdownPaste.silence": true,
+    "MarkdownPaste.path": "./assets/",
+    "powermode.enabled": true,
+    "powermode.presets": "magic",
+    "git.enableSmartCommit": true,
 }
