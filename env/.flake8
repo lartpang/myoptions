@@ -1,0 +1,16 @@
+# Put it in your project folder.
+[flake8]
+ignore =
+    # Too many leading '#' for block comment (E266)
+    E266
+exclude =
+    .git,
+    .editorconfig,
+    .gitignore,
+    __pycache__,
+    output,
+    old,
+    build,
+    dist,
+    *.egg/*
+max-line-length=100
