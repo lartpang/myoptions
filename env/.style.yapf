@@ -1,4 +1,4 @@
-# 放置于`~/.config/yapf/style`文件中
+# 放置于`~/.config/yapf/style`文件中, 或者项目文件夹下
 
 [style]
 # Align closing bracket with visual indentation.
