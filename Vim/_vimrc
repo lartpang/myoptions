@@ -1,45 +1,44 @@
-"For Linux
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plug
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-call plug#begin('~/.vim/my_plugin')
+call plug#begin('$VIM/vimfiles/my_plugin')
 
 "状态栏
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'itchyny/lightline.vim'
+
+" color
+Plug 'arcticicestudio/nord-vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
 
 "匹配跳转
 Plug 'vim-scripts/matchit.zip'
 
 "文件树
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+"we can use the `:Explore` to use a more flexible explore.
+"Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 
 "Highlights trailing whitespace
 Plug 'bronson/vim-trailing-whitespace'
 
 "括号补全
 Plug 'jiangmiao/auto-pairs'
-Plug 'kien/rainbow_parentheses.vim'
 Plug 'tpope/vim-surround'
 
 "注释
 Plug 'scrooloose/nerdcommenter'
-
-"全局搜索
-Plug 'dkprice/vim-easygrep'
 
 "快速打开文件
 Plug 'ctrlpvim/ctrlp.vim'
 
 "快速移动
 Plug 'easymotion/vim-easymotion'
+Plug 'ludovicchabant/vim-gutentags'
 
 "Coding
 Plug 'machakann/vim-highlightedyank'
-" zo, zO, zc, zC
-Plug 'tmhedberg/SimpylFold', { 'for': 'python' }
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 
 call plug#end()
@@ -63,7 +62,7 @@ else
   autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
 endif
 
-set viminfo='100,n$HOME/.vim/files/info/viminfo
+set viminfo='100,n$VIM/.vim/files/info/viminfo
 set whichwrap=b,s,<,>,[,]
 set nobomb
 set backspace=indent,eol,start whichwrap+=<,>,[,]
@@ -76,6 +75,15 @@ set winaltkeys=no
 set noeb
 set vb t_vb=
 
+"https://xbeta.info/vim73b.htm
+" conceallevel(简称cole)选项值: 具备conceal属性的字符串，并不一定是隐藏的。其具体表现取决于conceallevel的值。
+" 0：默认值，显示。 因此，只设定conceal，并没有任何隐藏效果。
+" 1：短线高亮。 匹配的字符串缩略显示为一个“-”符号（取决于listchars设定），并采用conceal组的高亮方案。
+" 2：不显示，除非定义了cchar变量。举个例子就明白了，如下语句 `:syntax match Entity “&amp;”?conceal cchar=&` 可以把实体字符显示为原字符，更易于阅读。
+" 3：完全不显示。
+"更多参见：:h cole
+set conceallevel=2
+
 """"""""""""""""""""""""""""""""""""""""""""
 "Encoding
 """"""""""""""""""""""""""""""""""""""""""""
@@ -84,6 +92,7 @@ set encoding=utf-8
 set fileencodings=utf-8,chinese,latin-1
 "解决consle输出乱码
 language messages zh_CN.utf-8
+set guifont=等距更纱黑体_T_SC:h13
 
 """"""""""""""""""""""""""""""""""""""""""""
 "GUI
@@ -92,9 +101,9 @@ language messages zh_CN.utf-8
 set cmdheight=1
 set noshowmode
 " 状态栏显示目前所执行的指令
-if has("gui_running")
-    set lines=35 columns=100
-endif
+"if has("gui_running")
+    "set lines=35 columns=100
+"endif
 
 " 设置 laststatus = 0 ，不显式状态行
 " 设置 laststatus = 1 ，仅当窗口多于一个时，显示状态行
@@ -106,7 +115,7 @@ command! FontBigger :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)
 command! FontSmaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
 
 set cursorline
-set cursorcolumn
+"set cursorcolumn
 
 if has("gui_running")
     " Switch on highlighting the last used search pattern.
@@ -136,8 +145,8 @@ set guioptions-=b
 
 " 出现问题时恢复文件
 "交换文件主要用于系统崩溃时恢复文件，文件名的开头是.、结尾是.swp
-set directory=~/.vim/swp//
-set undodir=~/.vim/undodir//
+set directory=$VIM/vimfiles/swp//
+set undodir=$VIM/vimfiles/undodir//
 set undofile
 
 " 监视文件改动
@@ -175,16 +184,16 @@ filetype indent plugin on
 " syntax          用语法高亮来定义折叠
 " diff            对没有更改的文本进行折叠
 " marker          对文中的标志折叠
-set foldmethod=marker
+" set foldmethod=marker
 "关闭自动折叠
-" set nofoldenable
+set nofoldenable
 
 
 """"""""""""""""""""""""""""""""""""""""""""
 "Key
 """"""""""""""""""""""""""""""""""""""""""""
 "set my leader
-let mapleader=","
+let mapleader=' '
 
 " 定义快捷键关闭当前分割窗口
 nmap <Leader>q :q<CR>
@@ -199,8 +208,8 @@ nnoremap <leader>ev :edit $MYVIMRC<CR>
 nnoremap <leader>sv :source $MYVIMRC<CR>
 
 " 打开当前目录 explorer/cmd
-" nmap <silent> <leader>exp :!start explorer %:p:h<CR>
-" nmap <silent> <leader>cmd :!start cmd /k cd %:p:h<cr>
+nmap <silent> <leader>exp :!start explorer %:p:h<CR>
+nmap <silent> <leader>cmd :!start cmd /k cd %:p:h<cr>
 
 " 复制当前文件/路径到剪贴板
 nmap <leader>cf :let @+=expand("%")<CR>
@@ -255,34 +264,59 @@ endfunc
 "美化
 """"""""""""""""""""""""""""""""""""""""""""
 syntax on
+"colorscheme nord
+colorscheme dracula
 
-let g:airline_theme='bubblegum' " <theme> 代表某个主题的名称
-" 开启tabline功能
-let g:airline#extensions#tabline#enabled = 1
-" 设置tabline分隔符
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
+" lightline
+""""""""""""""""""""""""""""""""""""""""""""
+let g:lightline = {
+      \ 'colorscheme': 'nord',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'readonly', 'filename', 'modified'] ],
+      \   'right': [ [ 'lineinfo' ],
+      \              [ 'percent' ],
+      \              [ 'fileformat', 'fileencoding', 'filetype'] ]
+      \ },
+      \ 'component_function': {
+      \   'fileformat': 'LightlineFileformat',
+      \   'filetype': 'LightlineFiletype',
+      \   'filename': 'LightlineFilename',
+      \ },
+      \ }
+
+function! LightlineFilename()
+  let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
+  let modified = &modified ? ' +' : ''
+  return filename . modified
+endfunction
+function! LightlineFileformat()
+  return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+function! LightlineFiletype()
+  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
 
 "文件树
 """"""""""""""""""""""""""""""""""""""""""""
-nnoremap <leader>nt :NERDTreeToggle<CR>
-"设定 NERDTree 视窗大小
-let g:NERDTreeWinSize = 30
-"不显示隐藏文件
-let g:NERDTreeHidden  = 0
-"Making it prettier
-let NERDTreeMinimalUI = 1
-let NERDTreeDirArrows = 1
-""修改树的显示图标
-let g:NERDTreeDirArrowExpandable = '►'
-let g:NERDTreeDirArrowCollapsible = '▼'
-let NERDTreeAutoCenter=1
-" 在终端启动vim时，共享NERDTree
-let g:nerdtree_tabs_open_on_console_startup=1
-" 忽略一下文件的显示
-let NERDTreeIgnore=['\.pyc','\~$','\.swp']
-""当NERDTree为剩下的唯一窗口时自动关闭
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"nnoremap <leader>nt :NERDTreeToggle<CR>
+""设定 NERDTree 视窗大小
+"let g:NERDTreeWinSize = 30
+""不显示隐藏文件
+"let g:NERDTreeHidden  = 0
+""Making it prettier
+"let NERDTreeMinimalUI = 1
+"let NERDTreeDirArrows = 1
+"""修改树的显示图标
+"let g:NERDTreeDirArrowExpandable = '►'
+"let g:NERDTreeDirArrowCollapsible = '▼'
+"let NERDTreeAutoCenter=1
+"" 在终端启动vim时，共享NERDTree
+"let g:nerdtree_tabs_open_on_console_startup=1
+"" 忽略一下文件的显示
+"let NERDTreeIgnore=['\.pyc','\~$','\.swp']
+"""当NERDTree为剩下的唯一窗口时自动关闭
+"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 "Highlights trailing whitespace
 """"""""""""""""""""""""""""""""""""""""""""
@@ -300,7 +334,7 @@ nmap <leader>tw :FixWhitespace<cr>
 
 "快速打开文件
 """"""""""""""""""""""""""""""""""""""""""""
-let g:ctrlp_map = '<c-p>'
+let g:ctrlp_map = '<leader>p'
 let g:ctrlp_cmd = 'CtrlP'
 " 使用vim的忽略文件
 set wildignore+=*\\node_modules\\*,*.git*,*.svn*,*.zip*,*.exe*,*.pyc*,*.bin*,*.7z*,*.rar*
@@ -312,33 +346,24 @@ set wildignore+=*\\node_modules\\*,*.git*,*.svn*,*.zip*,*.exe*,*.pyc*,*.bin*,*.7
 " <leader><leader>s                       从光标位置起，同时往前往后，在单词之间移动光标
 " <leader><leader>f｛char｝               从光标位置起，往前（往下）在单个字符之间移动光标
 
-"彩虹括号
-""""""""""""""""""""""""""""""""""""""""""""
-let g:rbpt_colorpairs = [
-    \ ['brown',       'RoyalBlue3'],
-    \ ['Darkblue',    'SeaGreen3'],
-    \ ['darkgray',    'DarkOrchid3'],
-    \ ['darkgreen',   'firebrick3'],
-    \ ['darkcyan',    'RoyalBlue3'],
-    \ ['darkred',     'SeaGreen3'],
-    \ ['darkmagenta', 'DarkOrchid3'],
-    \ ['brown',       'firebrick3'],
-    \ ['gray',        'RoyalBlue3'],
-    \ ['darkmagenta', 'DarkOrchid3'],
-    \ ['Darkblue',    'firebrick3'],
-    \ ['darkgreen',   'RoyalBlue3'],
-    \ ['darkcyan',    'SeaGreen3'],
-    \ ['darkred',     'DarkOrchid3'],
-    \ ['red',         'firebrick3'],
-    \ ]
-" 不加入这行, 防止黑色括号出现, 很难识别
-" \ ['black',       'SeaGreen3'],
-let g:rbpt_max = 16
-let g:rbpt_loadcmd_toggle = 0
-au VimEnter * RainbowParenthesesToggle
-au Syntax * RainbowParenthesesLoadRound
-au Syntax * RainbowParenthesesLoadSquare
-au Syntax * RainbowParenthesesLoadBraces
+"Tags
+" gutentags搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归 "
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.project', 'output', '.idea', '.vscode']
+
+" 所生成的数据文件的名称 "
+let g:gutentags_ctags_tagfile = '.tags'
+
+" 将自动生成的 tags 文件全部放入指定目录中，避免污染工程目录 "
+let s:vim_tags = expand('D:/TEMP/TGAS')
+let g:gutentags_cache_dir = s:vim_tags
+" 检测 vim_tags 不存在就新建 "
+if !isdirectory(s:vim_tags)
+   silent! call mkdir(s:vim_tags, 'p')
+endif
+
+" 配置 ctags 的参数 "
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+let g:gutentags_ctags_extra_args += ['--python-kinds=+cfmvi']
 
 "vim-surround
 """"""""""""""""""""""""""""""""""""""""""""
@@ -363,16 +388,28 @@ au Syntax * RainbowParenthesesLoadBraces
 " 加包围符号还有个非常好用的方式：在可视模式v下，按下S后即可添加想要添加的包围符号了。
 " 再说一个小技巧：在包围符号为括时，输入左括号 (或者{ ,则会留一个空格
 
-"jedi-vim
+"markdown
 """"""""""""""""""""""""""""""""""""""""""""
-let g:jedi#completions_command = "<C-N>"
-let g:jedi#goto_command = "<leader>gc"
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_folding_level = 6
+let g:vim_markdown_toc_autofit = 1
+let g:vim_markdown_math = 1
+let g:vim_markdown_frontmatter = 1
+let g:vim_markdown_strikethrough = 1
+let g:vim_markdown_autowrite = 1
+let g:vim_markdown_auto_insert_bullets = 0
+let g:vim_markdown_edit_url_in = 'tab'  " tab, vsplit, hsplit, current
+
+"python
+""""""""""""""""""""""""""""""""""""""""""""
+let g:jedi#goto_command = "<leader>gg"
 let g:jedi#goto_assignments_command = "<leader>ga"
+let g:jedi#goto_stubs_command = "<leader>gs"
 let g:jedi#goto_definitions_command = "<leader>gd"
 let g:jedi#documentation_command = "K"
-"let g:jedi#usages_command = "<leader>n"
-"let g:jedi#rename_command = "<leader>r"
-
+let g:jedi#usages_command = "<leader>n"
+let g:jedi#completions_command = "<C-N>"
+let g:jedi#rename_command = "<leader>r"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                           auto setting
