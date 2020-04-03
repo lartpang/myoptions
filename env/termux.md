@@ -27,7 +27,9 @@ echo "2 安装必要工具 ==>> "
 pkg install curl wget git unzip unrar htop
 
 echo "3 安装开发环境 ==>> "
-pkg install python clang vim-python
+wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+sh Miniconda3-latest-Linux-x86_64.sh
+pkg install clang vim-python
 
 echo "3.1 配置pip ==>> "
 mkdir $HOME/.pip
