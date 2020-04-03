@@ -27,9 +27,10 @@ echo "2 安装必要工具 ==>> "
 pkg install curl wget git unzip unrar htop
 
 echo "3 安装开发环境 ==>> "
-wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-sh Miniconda3-latest-Linux-x86_64.sh
-pkg install clang vim-python
+# 架构不同，不能直接使用miniconda
+#wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+#sh Miniconda3-latest-Linux-x86_64.sh
+pkg install python clang vim-python
 
 echo "3.1 配置pip ==>> "
 mkdir $HOME/.pip
@@ -64,8 +65,9 @@ custom_channels:
   simpleitk: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
 EOF
 
-echo "3.3 创建conda环境，名为py38 ==>> "
-conda create -n py38 python=3.8
+#pip 安装的conda不可以创建新的环境
+#echo "3.3 创建conda环境，名为py38 ==>> "
+#conda create -n py38 python=3.8
 
 echo "4 安装ssh ==>> "
 pkg install openssh
