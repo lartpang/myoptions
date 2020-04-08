@@ -1,0 +1,62 @@
+{
+    "suggest.enablePreview": true,
+    "suggest.timeout": 3000,
+    "suggest.minTriggerInputLength": 2,
+    "suggest.numberSelect": false,
+    "diagnostic.messageDelay": 500,
+    "diagnostic.checkCurrentLine": true,
+
+    // Coc
+    // we can directly use `:Format` to format the current file
+    // the `formatOnSaveFiletypes` will oupur the warning info.
+    // "coc.preferences.formatOnSaveFiletypes": [
+    //     "python", 
+    //     "json"
+    // ],
+
+    // json
+    "json.format.enable": true,
+
+    // python
+    // https://github.com/neoclide/coc-python
+    "python.autoComplete.addBrackets": true,
+    "python.disableInstallationCheck": true,
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length=118"
+    ],
+    "python.formatting.blackPath": "F:/CodingLanguage/Miniconda/Scripts/black.exe",
+    "python.globalModuleInstallation": false,
+    "python.jediEnabled": true,
+    "python.jediMemoryLimit": 0,
+    "python.jediPath": "F:/CodingLanguage/Miniconda/Scripts/jedi.exe",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--ignore=C812,W503,E501,E203"
+    ],
+    "python.linting.flake8Path": "F:/CodingLanguage/Miniconda/Scripts/flake8.exe",
+    "python.linting.ignorePatterns": [
+        ".vscode/*.py",
+        "**/site-packages/**/*.py"
+    ],
+    "python.linting.lintOnSave": true,
+    "python.linting.maxNumberOfProblems": 100,
+    "python.condaPath": "F:/CodingLanguage/Miniconda/Scripts/conda.exe",
+    "python.workspaceSymbols.ctagsPath": "ctags",
+    "python.workspaceSymbols.enabled": true,
+    "python.workspaceSymbols.exclusionPatterns": [
+        "**/site-packages/**"
+    ],
+    "python.workspaceSymbols.rebuildOnFileSave": true,
+    "python.workspaceSymbols.rebuildOnStart": true,
+    "python.workspaceSymbols.tagFilePath": "${workspaceFolder}/.vscode/tags",
+
+    // snippets
+    "snippets.ultisnips.enable": true,
+    "snippets.ultisnips.directories": [
+        "$HOME/vim_runtime/UltiSnips"
+    ],
+    "snippets.userSnippetsDirectory": "D:\\缓存\\MyVimFiles\\Snippets",
+    "snippets.snipmate.enable": false,
+}
