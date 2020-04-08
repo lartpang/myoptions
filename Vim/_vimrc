@@ -375,16 +375,39 @@ set background=dark
 
 "Plug 'itchyny/lightline.vim'
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
+
+function! LightlineFileformat()
+  return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! LightlineFileencoding()
+  return winwidth(0) > 70 ? &fileencoding : ''
+endfunction
+
+function! LightlineFiletype()
+  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+
 let g:lightline = {
-  \ 'colorscheme': 'dracula',
-  \ 'active': {
-  \   'left': [ [ 'mode', 'paste' ],
-  \             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
-  \ },
-  \ 'component_function': {
-  \   'cocstatus': 'coc#status'
-  \ },
-  \ }
+      \ 'colorscheme': 'dracula',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ],
+      \   'right': [ [ 'lineinfo' ],
+      \              [ 'percent' ],
+      \              [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \ },
+      \ 'component_function': {
+      \   'cocstatus': 'coc#status',
+      \   'currentfunction': 'CocCurrentFunction',
+      \   'fileformat': 'LightlineFileformat',
+      \   'fileencoding': 'LightlineFileencoding',
+      \   'filetype': 'LightlineFiletype',
+      \ },
+      \ }
 
 autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 
@@ -418,7 +441,7 @@ let g:ctrlp_cmd = 'CtrlP'
 
 "Plug 'yegappan/mru'
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let MRU_File = 'D:\\缓存\\MRU\\vim_mru_files'
+let MRU_File = 'D:\\缓存\\MyVimFiles\\MRU\\vim_mru_files'
 let MRU_Max_Entries = 1000
 let MRU_Exclude_Files = '^D:\\缓存\\.*'           " For MS-Windows
 let MRU_Window_Height = 15
@@ -577,3 +600,21 @@ nnoremap <silent> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+" Coc-ci
+nmap <silent> w <Plug>(coc-ci-w)
+nmap <silent> b <Plug>(coc-ci-b)
+
+" Coc-snippets
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'
