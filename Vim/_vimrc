@@ -339,12 +339,12 @@ augroup ft_vim
     \ endif
 augroup END
 
-call plug#begin('$HOME/vim_runtime/my_plugins')
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Plugins
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+call plug#begin('$HOME/vim_runtime/my_plugins')
 
 Plug 'dracula/vim', { 'as': 'dracula' }
 "we can use the `:Explore` to use a more flexible explore.
