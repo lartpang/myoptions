@@ -1,4 +1,4 @@
-# lartpang_vim
+# HappyVim
 
 ## 服务器版本
 
