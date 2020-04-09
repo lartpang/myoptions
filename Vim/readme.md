@@ -6,10 +6,10 @@
 
 ```sh
 curl https://raw.githubusercontent.com/lartpang/myoptions/master/Vim/server_vimrc.vim -o .vimrc
-mkdir lartpang_vim
-mkdir lartpang_vim/swp
-mkdir lartpang_vim/undodir
-mkdir lartpang_vim/info
+mkdir HappyVim
+mkdir HappyVim/swp
+mkdir HappyVim/undodir
+mkdir HappyVim/info
 
 echo "It's OK.
 ```
