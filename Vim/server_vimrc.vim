@@ -38,13 +38,13 @@ set nowb
 
 "set noswapfile
 set hidden
-set directory=$HOME/lartpang_vim/swp
+set directory=$HOME/HappyVim/swp
 set updatetime=300
 
-set viminfo='100,n$HOME/lartpang_vim/info/viminfo
+set viminfo='100,n$HOME/HappyVim/info/viminfo
 try
     " vim退出并在下次打开后仍然保留上次的undo历史
-    set undodir=$HOME/lartpang_vim/undodir
+    set undodir=$HOME/HappyVim/undodir
     set undofile
     set undolevels=1000
     set undoreload=10000
@@ -101,8 +101,8 @@ set cmdheight=1
 set laststatus=2
 
 " 使用指令变大变小
-command FontBigger :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
-command FontSmaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
+command! FontBigger :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
+command! FontSmaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
 
 set cursorline
 set cursorcolumn
@@ -200,15 +200,15 @@ nmap <Leader>w :w<CR>
 inoremap kj <ESC>
 
 " 定义vim设置文件内容相关
-command Modifymyconfig :e $MYVIMRC
+command! Modifymyconfig :e $MYVIMRC
 autocmd! BufWritePost $MYVIMRC source $MYVIMRC
 
 if has('win32')
     " 打开当前目录 explorer/cmd
     " nmap <silent> <leader>exp :!start explorer %:p:h<CR>
     " nmap <silent> <leader>cmd :!start cmd /k cd %:p:h<cr>
-    command Winexp :!start explorer %:p:h<CR>
-    command Wincmd :!start cmd /k cd %:p:h<CR>
+    command! Winexp :!start explorer %:p:h<CR>
+    command! Wincmd :!start cmd /k cd %:p:h<CR>
 "elseif has('unix')
 "elseif has('mac')
 endif
@@ -219,8 +219,8 @@ endif
 " 第二个命令拷贝当前文件的完整的绝对路径名。
 "   字符串中的:p告诉Vim你需要绝对路径。
 " 这里也有许多别的修饰符可以用到。
-command Copyrelpath :let @* = expand('%')
-command Copyabspath :let @* = expand('%:p')
+command! Copyrelpath :let @* = expand('%')
+command! Copyabspath :let @* = expand('%:p')
 
 " 快速交换当前行位置
 " 实际上交换本行和下面的行最简单可以使用 ddp
