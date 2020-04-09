@@ -1,3 +1,5 @@
+" By Lart Pang, 2020年4月9日
+" https://github.com/lartpang/myoptions/edit/master/Vim/server_vimrc.vim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
@@ -82,8 +84,8 @@ set tm=500
 set conceallevel=2
 
 " font
-set guifont=JetBrains_Mono:h12:cANSI
-set guifontwide=楷体:h14:cGB2312
+" set guifont=JetBrains_Mono:h12:cANSI
+" set guifontwide=楷体:h14:cGB2312
 " 字体测试
 " I Love You !
 " 我爱你中国！
