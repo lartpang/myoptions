@@ -81,8 +81,22 @@ set tm=500
 set conceallevel=2
 
 " font
-set guifont=JetBrains_Mono:h12:cANSI
-set guifontwide=黑体:h14:cGB2312
+"set guifont=JetBrains_Mono:h12:cANSI
+" 字体测试
+" |---------|----|
+" |iI1lL    |oO0a||
+" 测试中文字体等宽|
+" Set font according to system
+if has("gui_running")
+    if has("gui_win32")
+        set guifont=Sarasa_Mono_Slab_SC:h13,JetBrains_Mono:h12,IBM_Plex_Mono:h14,Source_Code_Pro:h12
+        set guifontwide=Sarasa_UI_SC:h13,Microsoft_YaHei_Mono:h12.5
+    elseif has("gui_gtk2")
+        set guifont=JetBrains_Mono:h12,IBM_Plex_Mono_14,:Hack_14,Source_Code_Pro_12
+    elseif has("x11")
+        set guifont=JetBrains_Mono:h12,IBM_Plex_Mono_14,:Hack_14,Source_Code_Pro_12
+    endif
+endif
 
 " gui
 " 设定命令行的行数为 2
@@ -95,8 +109,8 @@ set noshowmode
 set laststatus=2
 
 " 使用指令变大变小
-command FontBigger :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
-command FontSmaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
+command! FontBigger :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
+command! FontSmaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
 
 set cursorline
 set cursorcolumn
@@ -192,14 +206,14 @@ nmap <Leader>w :w<CR>
 inoremap kj <ESC>
 
 " 定义vim设置文件内容相关
-command Modifymyconfig :e! $HOME/vim_runtime/vimrcs/my_vimrc.vim
+command! Modifymyconfig :e! $HOME/vim_runtime/vimrcs/my_vimrc.vim
 autocmd! BufWritePost $HOME/vim_runtime/vimrcs/my_vimrc.vim source $HOME/vim_runtime/vimrcs/my_vimrc.vim
 
 " 打开当前目录 explorer/cmd
 " nmap <silent> <leader>exp :!start explorer %:p:h<CR>
 " nmap <silent> <leader>cmd :!start cmd /k cd %:p:h<cr>
-command Winexp :!start explorer %:p:h<CR>
-command Wincmd :!start cmd /k cd %:p:h<CR>
+command! Winexp :!start explorer %:p:h<CR>
+command! Wincmd :!start cmd /k cd %:p:h<CR>
 
 " 复制当前文件/路径到剪贴板
 " 第一个命令拷贝我们正在编辑的文件的相对路径。
@@ -207,8 +221,8 @@ command Wincmd :!start cmd /k cd %:p:h<CR>
 " 第二个命令拷贝当前文件的完整的绝对路径名。
 "   字符串中的:p告诉Vim你需要绝对路径。
 " 这里也有许多别的修饰符可以用到。
-command Copyrelpath :let @* = expand('%')
-command Copyabspath :let @* = expand('%:p')
+command! Copyrelpath :let @* = expand('%')
+command! Copyabspath :let @* = expand('%:p')
 
 " 快速交换当前行位置
 " 实际上交换本行和下面的行最简单可以使用 ddp
