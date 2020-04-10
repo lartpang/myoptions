@@ -11,5 +11,5 @@ mkdir HappyVim/swp
 mkdir HappyVim/undodir
 mkdir HappyVim/info
 
-echo "It's OK.
+echo "It's OK."
 ```
