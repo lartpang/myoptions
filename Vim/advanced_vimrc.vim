@@ -1,4 +1,53 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Predefined Variation and Create needed documents
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let s:HV_PATH = "$HOME/.HappyVim"
+let s:PLUGINDir = s:HV_PATH .. "/my_plugins"
+let s:SWPDir = s:HV_PATH .. "/swp"
+let s:UltiSNIPSDir = s:HV_PATH .. "/UltiSnips"
+let s:UNDODir = s:HV_PATH .. "/undodir"
+
+let s:CUS_PATH = "D:/缓存/MyVimFiles"
+let s:SNIPSDir = s:CUS_PATH .. "/Snippets"
+let s:MRUDir = s:CUS_PATH .. "/MRU"
+
+let &runtimepath = &runtimepath .. ',' .. s:HV_PATH
+
+let s:PATH_LIST = [
+            \ s:HV_PATH,
+            \ s:PLUGINDir,
+            \ s:SWPDir,
+            \ s:UltiSNIPSDir,
+            \ s:UNDODir,
+            \ s:CUS_PATH,
+            \ s:SNIPSDir,
+            \ s:MRUDir,
+            \ ]
+
+function! MkdirIfNotExist(path)
+    if !isdirectory(expand(a:path))
+        try
+            call mkdir(expand(a:path), "p", 0700)
+        catch
+            echom "Sorry, I can't create the path " .. expand(a:path)
+        endtry
+    endif
+endfunction
+
+for path in s:PATH_LIST
+    call MkdirIfNotExist(path)
+endfor
+
+if empty(glob(expand(s:HV_PATH .. '/autoload/plug.vim')))
+    silent execute "!curl -fLo " .. expand(s:HV_PATH .. '/autoload/plug.vim')
+                \ .. " --create-dirs "
+                \ .. "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -35,22 +84,18 @@ set nowb
 
 "set noswapfile
 set hidden
-set directory=$HOME/vim_runtime/swp
+set directory=s:SWPDir
 set updatetime=300
 
-set viminfo='100,n$HOME/vim_runtime/info/viminfo
+set viminfo='100,f1,<500
 try
     " vim退出并在下次打开后仍然保留上次的undo历史
-    set undodir=$HOME/vim_runtime/undodir
+    set undodir=s:UNDODir
     set undofile
     set undolevels=1000
     set undoreload=10000
 catch
 endtry
-
-" Enable filetype plugins
-filetype plugin on
-filetype indent on
 
 "自动设置当前目录为正在编辑的目录
 if exists('+autochdir')
@@ -80,7 +125,11 @@ set tm=500
 "更多参见：:h cole
 set conceallevel=2
 
-" font
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => GUI
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 "set guifont=JetBrains_Mono:h12:cANSI
 " 字体测试
 " |---------|----|
@@ -98,7 +147,21 @@ if has("gui_running")
     endif
 endif
 
-" gui
+set t_Co=256
+
+" Set extra options when running in GUI mode
+if has("gui_running")
+    "不显示工具/菜单栏
+    set guioptions-=T
+    set guioptions-=m
+    set guioptions-=L
+    set guioptions-=r
+    set guioptions-=b
+    " 终端窗口会自动弹到vim内部下侧窗口中
+    set guioptions+=!
+    set guiheadroom=0
+endif
+
 " 设定命令行的行数为 2
 set cmdheight=2
 set noshowmode
@@ -169,28 +232,6 @@ set nofoldenable
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => UI
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Enable syntax highlighting
-syntax enable
-
-set t_Co=256
-
-" Set extra options when running in GUI mode
-if has("gui_running")
-    "不显示工具/菜单栏
-    set guioptions-=T
-    set guioptions-=m
-    set guioptions-=L
-    set guioptions-=r
-    set guioptions-=b
-    " 终端窗口会自动弹到vim内部下侧窗口中
-    set guioptions+=!
-endif
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Custom Command
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -206,14 +247,16 @@ nmap <Leader>w :w<CR>
 inoremap kj <ESC>
 
 " 定义vim设置文件内容相关
-command! Modifymyconfig :e! $HOME/vim_runtime/vimrcs/my_vimrc.vim
-autocmd! BufWritePost $HOME/vim_runtime/vimrcs/my_vimrc.vim source $HOME/vim_runtime/vimrcs/my_vimrc.vim
+command! Modifymyconfig :edit $MYVIMRC
+autocmd! BufWritePost $MYVIMRC source $MYVIMRC
 
 " 打开当前目录 explorer/cmd
 " nmap <silent> <leader>exp :!start explorer %:p:h<CR>
 " nmap <silent> <leader>cmd :!start cmd /k cd %:p:h<cr>
-command! Winexp :!start explorer %:p:h<CR>
-command! Wincmd :!start cmd /k cd %:p:h<CR>
+if has("win32")
+    command! Winexp :!start explorer %:p:h<CR>
+    command! Wincmd :!start cmd /k cd %:p:h<CR>
+endif
 
 " 复制当前文件/路径到剪贴板
 " 第一个命令拷贝我们正在编辑的文件的相对路径。
@@ -291,10 +334,10 @@ endtry
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Custom Functions
+" => Custom Call
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-func! CompileRunGcc()
+function! CompileRunGcc()
     exec "w"
     if &filetype == 'c'
         exec "!g++ % -o %<"
@@ -307,42 +350,21 @@ func! CompileRunGcc()
     elseif &filetype == 'sh'
         :!%
     endif
-endfunc
+endfunction
 
 " Delete trailing white space on save, useful for some filetypes ;)
-fun! CleanExtraSpaces()
+function! CleanExtraSpaces()
     let save_cursor = getpos(".")
     let old_query = getreg('/')
     silent! %s/\s\+$//e
     call setpos('.', save_cursor)
     call setreg('/', old_query)
-endfun
-
-" 针对python文件自动添加头部信息
-func! SetTitle()
-    call setline(1, "\# -*- coding=utf8 -*-")
-    call setline(2, "\"\"\"")
-    call setline(3, "\# @Author : lart")
-    call setline(4, "\# @GitHub : github.com/lartpang")
-    call setline(5, "\# @Created Time : ".strftime("%Y-%m-%d %H:%M:%S"))
-    call setline(6, "\# @Description :")
-    call setline(7, "\"\"\"")
-    normal G
-    normal o
-    normal o
-endfunc
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Custom Call
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+endfunction
 
 map <F5> :call CompileRunGcc()<CR>
 
 augroup ft_vim
     autocmd!
-
-    autocmd BufNewFile *.py call SetTitle()
 
     autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 
@@ -358,7 +380,8 @@ augroup END
 " => Plugins
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-call plug#begin('$HOME/vim_runtime/my_plugins')
+call plug#begin(expand(s:PLUGINDir))
+"You can remove filetype off, filetype plugin indent on and syntax on from your .vimrc as they are automatically handled by plug#begin() and plug#end().
 
 Plug 'dracula/vim', { 'as': 'dracula' }
 "we can use the `:Explore` to use a more flexible explore.
@@ -455,9 +478,9 @@ let g:ctrlp_cmd = 'CtrlP'
 
 "Plug 'yegappan/mru'
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let MRU_File = 'D:\\缓存\\MyVimFiles\\MRU\\vim_mru_files'
+let MRU_File = s:MRUDir .. '/vim_mru_files'
 let MRU_Max_Entries = 1000
-let MRU_Exclude_Files = '^D:\\缓存\\.*'           " For MS-Windows
+let MRU_Exclude_Files = '^D:/缓存/.*'           " For MS-Windows
 let MRU_Window_Height = 15
 let MRU_Use_Current_Window = 1
 let MRU_Auto_Close = 1
@@ -587,10 +610,10 @@ xmap <silent> <TAB> <Plug>(coc-range-select)
 command! -nargs=0 Format :call CocAction('format')
 
 " Add `:Fold` command to fold current buffer.
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+command! -nargs=? Fold :call CocAction('fold', <f-args>)
 
 " Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
 
 " Add (Neo)Vim's native statusline support.
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
@@ -616,10 +639,12 @@ nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 " Coc-ci
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nmap <silent> w <Plug>(coc-ci-w)
 nmap <silent> b <Plug>(coc-ci-b)
 
 " Coc-snippets
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? coc#_select_confirm() :
       \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
