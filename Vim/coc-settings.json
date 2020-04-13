@@ -55,7 +55,7 @@
     // snippets
     "snippets.ultisnips.enable": true,
     "snippets.ultisnips.directories": [
-        "$HOME/vim_runtime/UltiSnips"
+        "$HOME/.HappyVim/UltiSnips"
     ],
     "snippets.userSnippetsDirectory": "D:\\缓存\\MyVimFiles\\Snippets",
     "snippets.snipmate.enable": false,

@@ -2,28 +2,17 @@
 " => Predefined Variation and Create needed documents
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-let s:HV_PATH = "$HOME/.HappyVim"
-let s:PLUGINDir = s:HV_PATH .. "/my_plugins"
-let s:SWPDir = s:HV_PATH .. "/swp"
-let s:UltiSNIPSDir = s:HV_PATH .. "/UltiSnips"
-let s:UNDODir = s:HV_PATH .. "/undodir"
-
-let s:CUS_PATH = "D:/缓存/MyVimFiles"
-let s:SNIPSDir = s:CUS_PATH .. "/Snippets"
-let s:MRUDir = s:CUS_PATH .. "/MRU"
-
-let &runtimepath = &runtimepath .. ',' .. s:HV_PATH
-
 let s:PATH_LIST = [
-            \ s:HV_PATH,
-            \ s:PLUGINDir,
-            \ s:SWPDir,
-            \ s:UltiSNIPSDir,
-            \ s:UNDODir,
-            \ s:CUS_PATH,
-            \ s:SNIPSDir,
-            \ s:MRUDir,
+            \ "$HOME/.HappyVim",
+            \ "$HOME/.HappyVim/my_plugins",
+            \ "$HOME/.HappyVim/swp",
+            \ "$HOME/.HappyVim/UltiSnips",
+            \ "$HOME/.HappyVim/undodir",
+            \ "D:/缓存/MyVimFiles",
+            \ "D:/缓存/MyVimFiles/Snippets",
+            \ "D:/缓存/MyVimFiles/MRU"
             \ ]
+let &runtimepath = &runtimepath .. ',' .. s:PATH_LIST[0]
 
 function! MkdirIfNotExist(path)
     if !isdirectory(expand(a:path))
@@ -39,8 +28,8 @@ for path in s:PATH_LIST
     call MkdirIfNotExist(path)
 endfor
 
-if empty(glob(expand(s:HV_PATH .. '/autoload/plug.vim')))
-    silent execute "!curl -fLo " .. expand(s:HV_PATH .. '/autoload/plug.vim')
+if empty(glob(expand(s:PATH_LIST[0] .. '/autoload/plug.vim')))
+    silent execute "!curl -fLo " .. expand(s:PATH_LIST[0] .. '/autoload/plug.vim')
                 \ .. " --create-dirs "
                 \ .. "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
@@ -84,18 +73,14 @@ set nowb
 
 "set noswapfile
 set hidden
-set directory=s:SWPDir
+set directory=$HOME/.HappyVim/swp
 set updatetime=300
 
 set viminfo='100,f1,<500
-try
-    " vim退出并在下次打开后仍然保留上次的undo历史
-    set undodir=s:UNDODir
-    set undofile
-    set undolevels=1000
-    set undoreload=10000
-catch
-endtry
+set undodir=$HOME/.HappyVim/undodir
+set undofile
+set undolevels=1000
+set undoreload=10000
 
 "自动设置当前目录为正在编辑的目录
 if exists('+autochdir')
@@ -380,7 +365,7 @@ augroup END
 " => Plugins
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-call plug#begin(expand(s:PLUGINDir))
+call plug#begin('$HOME/.HappyVim/my_plugins')
 "You can remove filetype off, filetype plugin indent on and syntax on from your .vimrc as they are automatically handled by plug#begin() and plug#end().
 
 Plug 'dracula/vim', { 'as': 'dracula' }
@@ -397,7 +382,6 @@ Plug 'tpope/vim-surround'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'yegappan/mru'
 Plug 'easymotion/vim-easymotion'
-Plug 'terryma/vim-expand-region'
 
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 
@@ -478,7 +462,7 @@ let g:ctrlp_cmd = 'CtrlP'
 
 "Plug 'yegappan/mru'
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let MRU_File = s:MRUDir .. '/vim_mru_files'
+let MRU_File = 'D:/缓存/MyVimFiles/MRU/vim_mru_files'
 let MRU_Max_Entries = 1000
 let MRU_Exclude_Files = '^D:/缓存/.*'           " For MS-Windows
 let MRU_Window_Height = 15
@@ -495,11 +479,6 @@ let MRU_Open_File_Use_Tabs = 0
 " <leader><leader>b                       从光标位置起，往后（往上）在单词之间移动光标
 " <leader><leader>s                       从光标位置起，同时往前往后，在单词之间移动光标
 " <leader><leader>f｛char｝               从光标位置起，往前（往下）在单个字符之间移动光标
-
-"Plug 'terryma/vim-expand-region'
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map = <Plug>(expand_region_expand)
-map - <Plug>(expand_region_shrink)
 
 "Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -657,3 +636,4 @@ function! s:check_back_space() abort
 endfunction
 
 let g:coc_snippet_next = '<tab>'
+

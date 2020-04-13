@@ -2,6 +2,33 @@
 " https://github.com/lartpang/myoptions/edit/master/Vim/server_vimrc.vim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Predefined Variation and Create needed documents
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let s:PATH_LIST = [
+            \ "$HOME/.HappyVim",
+            \ "$HOME/.HappyVim/swp",
+            \ "$HOME/.HappyVim/undodir",
+            \ "$HOME/.HappyVim/MRU"
+            \ ]
+let &runtimepath = &runtimepath .. ',' .. s:PATH_LIST[0]
+
+function! MkdirIfNotExist(path)
+    if !isdirectory(expand(a:path))
+        try
+            call mkdir(expand(a:path), "p", 0700)
+        catch
+            echom "Sorry, I can't create the path " .. expand(a:path)
+        endtry
+    endif
+endfunction
+
+for path in s:PATH_LIST
+    call MkdirIfNotExist(path)
+endfor
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -41,15 +68,11 @@ set hidden
 set directory=$HOME/HappyVim/swp
 set updatetime=300
 
-set viminfo='100,n$HOME/HappyVim/info/viminfo
-try
-    " vim退出并在下次打开后仍然保留上次的undo历史
-    set undodir=$HOME/HappyVim/undodir
-    set undofile
-    set undolevels=1000
-    set undoreload=10000
-catch
-endtry
+set viminfo='100,f1,<500
+set undodir=$HOME/HappyVim/undodir
+set undofile
+set undolevels=1000
+set undoreload=10000
 
 " Enable filetype plugins
 filetype plugin on

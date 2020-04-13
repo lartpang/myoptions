@@ -6,10 +6,10 @@
 
 ```sh
 curl https://raw.githubusercontent.com/lartpang/myoptions/master/Vim/server_vimrc.vim -o .vimrc
-mkdir HappyVim
-mkdir HappyVim/swp
-mkdir HappyVim/undodir
-mkdir HappyVim/info
+```
 
-echo "It's OK."
+## 完整版本下载
+
+```sh
+curl https://raw.githubusercontent.com/lartpang/myoptions/master/Vim/advanced_vimrc.vim -o .vimrc
 ```
