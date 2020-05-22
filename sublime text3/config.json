@@ -1,37 +1,24 @@
 {
-	"afn_blacklist_scopes":
+	"color_scheme": "Packages/Dracula Color Scheme/Dracula.tmTheme",
+	"draw_white_space": "all",
+	"ensure_newline_at_eof_on_save": true,
+	"font_face": "Sarasa Term SC",
+	"font_options":
 	[
-		"string.regexp.js"
+		"directwrite"
 	],
-	"afn_insert_dimensions": true,
-	"afn_insert_width_first": false,
-	"afn_proj_root": "../",
-	"afn_template_languages": false,
-	"afn_use_keybinding": false,
-	"afn_use_project_root": true,
-	"afn_valid_scopes":
-	[
-		"string",
-		"css",
-		"sass",
-		"less",
-		"scss"
-	],
-	"color_scheme": "Packages/Color Scheme - Default/Breakers.sublime-color-scheme",
-	"draw_minimap_border": true,
-	"font_face": "Inziu Iosevka Slab SC",
-	"font_size": 11,
+	"font_size": 12,
+	"highlight_line": true,
 	"ignored_packages":
 	[
-		"Markdown",
+		"Rust",
 		"Vintage"
 	],
-	"rulers":
-	[
-		100
-	],
-	"show_encoding": true,
+	"scroll_past_end": false,
+	"shift_tab_unindent": true,
 	"theme": "Adaptive.sublime-theme",
 	"translate_tabs_to_spaces": true,
+	"trim_automatic_white_space": true,
+	"trim_trailing_white_space_on_save": true,
 	"word_wrap": "true"
 }
