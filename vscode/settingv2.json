@@ -1,0 +1,179 @@
+{
+    "workbench.iconTheme": "vscode-icons",
+    "editor.minimap.enabled": false,
+    "editor.dragAndDrop": false, // 选中文字后，可以拖动它们调整位置。我是不需要
+    "editor.cursorSmoothCaretAnimation": true, // 移动光标时变得平滑
+    "editor.smoothScrolling": true, // 滚动平滑，不过效果很微弱
+    "editor.fontFamily": "'Sarasa Mono SC'",
+    "editor.fontLigatures": true,
+    "breadcrumbs.enabled": true,
+    "window.titleBarStyle": "custom",
+    "editor.fontSize": 16,
+    "editor.autoIndent": true,
+    "editor.codeLens": false,
+    "editor.cursorBlinking": "smooth",
+    "editor.cursorStyle": "line",
+    "editor.formatOnPaste": true,
+    "editor.formatOnType": false,
+    "editor.formatOnSave": true,
+    "editor.lineHeight": 20,
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": true,
+        "strings": true
+    },
+    "files.autoGuessEncoding": true,
+    "files.insertFinalNewline": true,
+    "editor.suggestSelection": "first",
+    "editor.snippetSuggestions": "top",
+    "debug.toolBarLocation": "floating",
+    "search.showLineNumbers": true,
+    "workbench.colorCustomizations": {},
+    "workbench.colorTheme": "Dracula Soft",
+    "terminal.integrated.inheritEnv": false,
+    "window.zoomLevel": 0,
+    "terminal.integrated.shell.linux": "/bin/bash",
+    "markdown.preview.scrollEditorWithPreview": false,
+    "git.enableSmartCommit": true,
+    "files.exclude": {
+        "**/.idea": true
+    },
+    "editor.colorDecorators": false,
+    "editor.columnSelection": false,
+    "editor.parameterHints.cycle": true,
+    "editor.renameOnType": true,
+    "editor.tabCompletion": "on",
+    "files.maxMemoryForLargeFilesMB": 2048,
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "workbench.settings.useSplitJSON": true, // 恢复手动编辑时的两列设置
+    "workbench.enableExperiments": false,
+    "workbench.preferredDarkColorTheme": "Dracula Soft",
+    "workbench.tree.indent": 4,
+    "window.title": "${dirty}${activeEditorLong}${separator}${rootName}${separator}${activeFolderLong}",
+    "debug.inlineValues": true,
+    "extensions.ignoreRecommendations": true,
+    "extensions.showRecommendationsOnlyOnDemand": true,
+    "terminal.integrated.confirmOnExit": true,
+    "terminal.integrated.cwd": "D:\\Coding",
+    "terminal.integrated.fontFamily": "Sarasa Term SC",
+    "bracket-pair-colorizer-2.highlightActiveScope": true,
+    "editor.matchBrackets": "never",
+    "grunt.autoDetect": "off",
+    "gulp.autoDetect": "off",
+    "html.format.endWithNewline": true,
+    "jake.autoDetect": "off",
+    "npm.autoDetect": "off",
+    "python.autoComplete.addBrackets": true,
+    "python.formatting.provider": "black",
+    "python.linting.flake8Enabled": true,
+    "python.workspaceSymbols.enabled": true,
+    "vim.easymotion": true,
+    "vim.easymotionMarkerFontFamily": "Sarasa Mono SC",
+    "vim.easymotionMarkerFontWeight": "bold",
+    "vim.foldfix": true,
+    "vim.highlightedyank.enable": true,
+    "vim.hlsearch": true,
+    "vim.leader": " ",
+    "vim.useSystemClipboard": true,
+    "terminal.integrated.shell.windows": "C:\\Windows\\Sysnative\\cmd.exe",
+    "python.formatting.yapfPath": "",
+    "python.linting.flake8Path": "F:\\CodingLanguage\\Python\\Scripts\\flake8.exe",
+    "vim.visualstar": true,
+    "vim.insertModeKeyBindings": [
+        {
+            "before": [
+                "k",
+                "j"
+            ],
+            "after": [
+                "<Esc>"
+            ]
+        }
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "<leader>",
+                "w"
+            ],
+            "commands": [
+                "workbench.action.files.save"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "q"
+            ],
+            "commands": [
+                "workbench.action.closeActiveEditor"
+            ]
+        }
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                ">"
+            ],
+            "commands": [
+                "editor.action.indentLines"
+            ]
+        },
+        {
+            "before": [
+                "<"
+            ],
+            "commands": [
+                "editor.action.outdentLines"
+            ]
+        },
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python"
+    },
+    "python.formatting.blackPath": "F:\\CodingLanguage\\Python\\Scripts\\black.exe",
+    "python.formatting.autopep8Path": "",
+    "python.formatting.blackArgs": [
+        "-l 99"
+    ],
+    "editor.autoClosingBrackets": "always",
+    "python.linting.flake8Args": [
+        "-max-line-length=99",
+        "-max-doc-length=99",
+        "-max-complexity=10",
+        "-exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.vscode,.idea,build,dist",
+        "-ignore=F812,H101,H202,H233,H301,H306,H401,H403,H404,H405,H501"
+    ],
+    "C_Cpp.updateChannel": "Insiders",
+    "markdown.extension.toc.githubCompatibility": true,
+    // settings.json
+    // markdown-formatter conf
+    // Convert the code area of unnamed language into code block according to js type
+    // "markdownFormatter.codeAreaToBlock": "js",
+    // or not
+    "markdownFormatter.codeAreaToBlock": "",
+    // format punctuation automatically
+    // "markdownFormatter.fullWidthTurnHalfWidth": "auto",
+    // Chinese punctuation formatted to English
+    "markdownFormatter.fullWidthTurnHalfWidth": "，：；！“”‘’（）？。 ",
+    "markdownFormatter.formatOpt": {
+        "indent_size": 2
+    },
+    "[markdown]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "mervin.markdown-formatter"
+    },
+    "markdown.extension.print.absoluteImgPath": false,
+    "go.useCodeSnippetsOnFunctionSuggest": true,
+    "go.coverageDecorator": {
+        "coveredGutterStyle": "blockred"
+    },
+    "go.formatTool": "goreturns",
+    "go.coverOnSave": true,
+    "go.gopath": "D:\\GoCoding",
+    "go.gotoSymbol.includeImports": true,
+    "go.testEnvFile": "",
+    "go.autocompleteUnimportedPackages": true,
+}
